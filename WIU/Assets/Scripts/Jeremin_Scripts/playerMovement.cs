@@ -17,13 +17,13 @@ public class playerMovement : MonoBehaviour
 
     public float crouchHeight = 0.5f; // Adjust as needed
     public KeyCode crouchKey = KeyCode.LeftControl;
-
     public KeyCode sprintKey = KeyCode.LeftShift; // Define sprint key
 
     Vector3 velocity;
     bool isGrounded;
     bool isCrouching = false;
     bool isSprinting = false;
+    float standingHeight;
 
     // Start is called before the first frame update
     void Start()
@@ -51,22 +51,40 @@ public class playerMovement : MonoBehaviour
         characterController.Move(move * currentSpeed * Time.deltaTime);
 
         // Check if there is movement input
-        bool isMoving = (x != 0 || z != 0);
+        //bool isMoving = (x != 0 || z != 0);
 
-        // Trigger walk animation if there is movement input
-        animator.SetBool("isMoving", isMoving);
+
+        animator.SetBool("isMoving", z > 0);
+
+
+        animator.SetBool("isSprinting", isSprinting);
+
+
+        animator.SetBool("isWalkingBackwards", z < 0);
+
+        animator.SetBool("isSprintingBackwards", isSprinting && z < 0);
+
+        animator.SetBool("isStrafing", x > 0);
+
+        animator.SetBool("isStrafingL", x < 0);
+
+        animator.SetBool("isStrafeRunning", isSprinting && x > 0);
+
+        animator.SetBool("isStrafingRunningL", isSprinting && x < 0);
+
 
         // Toggle crouch
         if (Input.GetKeyDown(crouchKey) && isGrounded)
         {
             isCrouching = !isCrouching;
+            animator.SetTrigger("crouchTrigger");
             if (isCrouching)
             {
                 characterController.height = crouchHeight;
             }
             else
             {
-                characterController.height = 2f; // Default height
+                characterController.height = standingHeight; 
             }
         }
 
@@ -83,7 +101,7 @@ public class playerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            animator.SetBool("isGrounded", false);
+            animator.SetTrigger("jumpTrigger");
         }
 
         velocity.y += gravity * Time.deltaTime;

@@ -444,7 +444,7 @@ GameObject:
   - component: {fileID: 70511675}
   - component: {fileID: 70511674}
   - component: {fileID: 70511673}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stair (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2860,7 +2860,7 @@ GameObject:
   - component: {fileID: 675408824}
   - component: {fileID: 675408823}
   - component: {fileID: 675408822}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4189,7 +4189,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1049078434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stairs_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5104,7 +5104,7 @@ GameObject:
   - component: {fileID: 1230226178}
   - component: {fileID: 1230226177}
   - component: {fileID: 1230226176}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7516,7 +7516,7 @@ GameObject:
   - component: {fileID: 1591204232}
   - component: {fileID: 1591204231}
   - component: {fileID: 1591204230}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stair (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8283,8 +8283,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651853510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.983, y: 0, z: -6.049}
-  m_LocalScale: {x: 3.74, y: 3.8, z: 0.4}
+  m_LocalPosition: {x: -3.29, y: 0, z: -6.049}
+  m_LocalScale: {x: 3.12, y: 3.8, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1167933795}
@@ -9992,6 +9992,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2103952191}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2110024494
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2110024496}
+  - component: {fileID: 2110024495}
+  m_Layer: 0
+  m_Name: NavMesh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2110024495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110024494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4736
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: 8b13403e714724d438a12c92d4be4bf8, type: 2}
+--- !u!4 &2110024496
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110024494}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -132.7267, y: -31.448975, z: 51.303047}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2134106855
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10247,8 +10308,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6505095934918850125, guid: e917c7f245b666140ba9426225102755,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6505095934918850125, guid: e917c7f245b666140ba9426225102755,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.48902428
+      value: -0.81
       objectReference: {fileID: 0}
     - target: {fileID: 6505095934918850125, guid: e917c7f245b666140ba9426225102755,
         type: 3}

@@ -191,7 +191,12 @@ public class scr_MinionAi : MonoBehaviour
         agent.SetDestination(transform.position);
 
         transform.LookAt(target);
-        
+
+        // Ensure rotation around x-axis is zero
+        Vector3 newRotation = transform.rotation.eulerAngles;
+        newRotation.x = 0;
+        transform.rotation = Quaternion.Euler(newRotation);
+
         if (!alreadyAttacked)
         {
             /// Attack code here

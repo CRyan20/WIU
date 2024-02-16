@@ -8,6 +8,7 @@ public class scr_MinionAi : MonoBehaviour
     public Transform target;
     public LayerMask whatIsGround, whatIsPlayer;
     private Animator animator;
+    private HealthSystem healthSystem;
 
     //[Header("Stats")]
     //public float health = 65;
@@ -59,6 +60,7 @@ public class scr_MinionAi : MonoBehaviour
     private void Start()
     {
         isDead = false;
+        healthSystem = GetComponent<HealthSystem>();
     }
 
     private void Update()
@@ -223,25 +225,24 @@ public class scr_MinionAi : MonoBehaviour
         animator.SetBool("isAttacking", false);
     }
 
-    //public void TakeDamage(int damage)
-    //{
-    //    health -= damage;
-
-    //    if (health <= 0f)
-    //    {
-    //        Invoke(nameof(DestroyEnemy), 0.5f);
-    //    }
-    //}
+    public void CheckDamage()
+    {
+        if (healthSystem.currentHealth <= 0f && !isDead)
+        {
+            currentState = MinionState.Dead;
+        }
+    }
 
     private void Death()
     {
         isDead = true;
         animator.SetBool("isDead", true);
+        DestroyEnemy();
     }
 
     private void DestroyEnemy()
     {
-        Destroy(gameObject);
+        Destroy(gameObject, 3f);
     }
 
     private void OnDrawGizmosSelected()

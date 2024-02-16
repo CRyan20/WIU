@@ -13,4 +13,7 @@ public class ItemData : ScriptableObject
 
     [Range(1, 999)]
     public int maxStack = 1;
+
+    public int AmmoCount;
+    public int MaxAmmoCount;
 }

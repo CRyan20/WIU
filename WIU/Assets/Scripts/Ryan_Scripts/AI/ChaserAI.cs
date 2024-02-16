@@ -28,7 +28,8 @@ public class ChaserAI : MonoBehaviour
 
     [Header("Patrol State")]
     public float patrolSpeed = 2f;
-    public Transform[] waypoints;
+    //public Transform[] waypoints;
+    public List<Transform> waypoints = new List<Transform>();
     public float waypointRange = 3f; //range when enemy swaps to next waypoint
     private int currWaypointIndex = 1;
     private bool hasReachedWaypoint = false;
@@ -169,7 +170,7 @@ public class ChaserAI : MonoBehaviour
             if (distanceToWaypoint <= waypointRange)
             {
                 // Move to the next waypoint
-                currWaypointIndex = (currWaypointIndex + 1) % waypoints.Length;
+                currWaypointIndex = (currWaypointIndex + 1) % waypoints.Count;
                 hasReachedWaypoint = true;
             }
         }
@@ -277,5 +278,14 @@ public class ChaserAI : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, fovAngle * 0.5f, 0) * transform.forward * viewDistance);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -fovAngle * 0.5f, 0) * transform.forward * viewDistance);
+    }
+
+    public void SetWaypoints(GameObject wayPointsObjects)
+    {
+        waypoints.Clear();
+        foreach (Transform child in wayPointsObjects.transform)
+        {
+            waypoints.Add(child);
+        }
     }
 }

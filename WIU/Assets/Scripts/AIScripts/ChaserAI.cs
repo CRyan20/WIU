@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
 public class ChaserAI : MonoBehaviour
 {
@@ -17,12 +18,13 @@ public class ChaserAI : MonoBehaviour
 
     [Header("Enemy Data")]
     public NavMeshAgent chaser;
-    public Transform player;
+    public Transform[] players;
     private float rotationSpeed = 1f;
     public GameObject lookAt;
     public float lookAtOffset = 0.5f;
     private float originalLookAtYPos;
     public HealthSystem healthSystem;
+    PhotonView photonView;
 
     [Header("Patrol State")]
     public float patrolSpeed = 2f;
@@ -42,10 +44,26 @@ public class ChaserAI : MonoBehaviour
     public float fovAngle = 90f; // Field of view angle
     public float viewDistance = 10f; // Maximum distance the AI can see
 
+    void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        // Find all with player tag
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+        players = new Transform[playerObjects.Length];
+        for (int i = 0; i < playerObjects.Length; i++)
+        {
+            players[i] = playerObjects[i].transform;
+        }
+        if (players == null || players.Length == 0)
+        {
+            Debug.LogError("Player not found");
+        }
+
         animator = GetComponent<Animator>();
         healthSystem = GetComponent<HealthSystem>();
 
@@ -56,8 +74,30 @@ public class ChaserAI : MonoBehaviour
         lookAtPosition.y = originalLookAtYPos;
         lookAt.transform.position = lookAtPosition;
         lookAt.transform.rotation = transform.rotation;
+
         //start state is patrol
         currState = EnemyState.PATROL;
+
+        // Delayed initialization after a short delay (adjust delay time as needed)
+        StartCoroutine(DelayedInitialization(1.0f));
+    }
+
+    IEnumerator DelayedInitialization(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Find all with player tag
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+        players = new Transform[playerObjects.Length];
+        for (int i = 0; i < playerObjects.Length; i++)
+        {
+            players[i] = playerObjects[i].transform;
+        }
+
+        if (players == null || players.Length == 0)
+        {
+            Debug.LogError("Player not found");
+        }
     }
 
     // Update is called once per frame
@@ -105,11 +145,18 @@ public class ChaserAI : MonoBehaviour
     void Patrol()
     {
         chaser.speed = patrolSpeed;
-        if (Vector3.Distance(transform.position, player.position) < chaseRange)
+        // Iterate through each player in the players array
+        foreach (Transform player in players)
         {
-            //switch to chase state
-            currState = EnemyState.CHASE;
-            return;
+            if (player == null) 
+                continue;
+
+            if (Vector3.Distance(transform.position, player.position) < chaseRange)
+            {
+                //switch to chase state
+                currState = EnemyState.CHASE;
+                return;
+            }
         }
 
         //if it hasnt reached waypoint
@@ -139,28 +186,34 @@ public class ChaserAI : MonoBehaviour
     void Chase()
     {
         chaser.speed = chaseSpeed;
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        if (distanceToPlayer < chaseRange)
+        foreach (Transform player in players)
         {
-            if (distanceToPlayer > chaser.stoppingDistance)
+            if (player == null)
+                continue;
+
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer < chaseRange)
             {
-                chaser.SetDestination(player.position);
+                if (distanceToPlayer > chaser.stoppingDistance)
+                {
+                    chaser.SetDestination(player.position);
+                }
+                else
+                {
+                    chaser.velocity = Vector3.zero;
+                    currState = EnemyState.ATTACK;
+                }
+
+                if (IsPlayerInFOV(player.position))
+                {
+                    return;
+                }
             }
             else
             {
-                chaser.velocity = Vector3.zero;
-                currState = EnemyState.ATTACK;
+                //if not in range make it patrol state
+                currState = EnemyState.PATROL;
             }
-
-            if (IsPlayerInFOV(player.position))
-            {
-                return;
-            }
-        }
-        else
-        {
-            //if not in range make it patrol state
-            currState = EnemyState.PATROL;
         }
     }
 
@@ -170,12 +223,18 @@ public class ChaserAI : MonoBehaviour
         animator.SetBool("Walking", true);
         animator.SetBool("Attack", true);
 
-        //not in range
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        if (distanceToPlayer > chaseRange)
+        foreach (Transform player in players)
         {
-            animator.SetBool("Attack", false);
-            currState = EnemyState.PATROL;
+            if (player == null)
+                continue;
+
+            //not in range
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer > chaseRange)
+            {
+                animator.SetBool("Attack", false);
+                currState = EnemyState.PATROL;
+            }
         }
     }
 

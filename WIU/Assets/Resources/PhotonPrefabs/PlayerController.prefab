@@ -101,6 +101,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 8960416206267448924}
+  - {fileID: 6528937848630475883}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -411,3 +412,57 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6528937848630475883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4282553946027665514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isGrounded
+  - Type: 1
+    SynchronizeType: 2
+    Name: speed
+  - Type: 4
+    SynchronizeType: 2
+    Name: isMoving
+  - Type: 4
+    SynchronizeType: 2
+    Name: isSprinting
+  - Type: 4
+    SynchronizeType: 2
+    Name: isWalkingBackwards
+  - Type: 4
+    SynchronizeType: 2
+    Name: isSprintingBackwards
+  - Type: 4
+    SynchronizeType: 2
+    Name: isStrafing
+  - Type: 4
+    SynchronizeType: 2
+    Name: isStrafeRunning
+  - Type: 4
+    SynchronizeType: 2
+    Name: isStrafingL
+  - Type: 4
+    SynchronizeType: 2
+    Name: isStrafingRunningL
+  - Type: 9
+    SynchronizeType: 2
+    Name: jumpTrigger
+  - Type: 9
+    SynchronizeType: 0
+    Name: crouchTrigger
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0

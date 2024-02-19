@@ -6,6 +6,7 @@ public class HealthSystem : MonoBehaviour
 {
     public int maxHealth = 20;
     public int currentHealth;
+    public AudioSource hit;
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +16,7 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        hit.Play();
         currentHealth -= amount;
         if (currentHealth <= 0)
         {

@@ -39,11 +39,12 @@ public class shooting : MonoBehaviour
 
             Destroy(a, 1);
             Destroy(b, 1);
-            //enemy enemy = hit.transform.GetComponent<enemy>();
-            //if (enemy != null)
-            //{
-            //    enemy.TakeDamage(5);
-            //}
+
+           HealthSystem enemy = hit.transform.GetComponent<HealthSystem>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(5);
+            }
 
         }
     }

@@ -16,5 +16,17 @@ public class HealthSystem : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+
+    }
+
+    void Die()
+    {
+        // Perform any necessary actions before destroying the game object, such as playing death animations, spawning effects, etc.
+        Destroy(gameObject);
     }
 }
+

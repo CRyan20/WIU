@@ -23,7 +23,6 @@ public class TankAI : MonoBehaviour
     public GameObject lookAt;
     public float lookAtOffset = 0.5f;
     private float originalLookAtYPos;
-    public HealthSystem healthSystem;
     PhotonView photonView;
 
     [Header("Patrol State")]
@@ -65,7 +64,6 @@ public class TankAI : MonoBehaviour
         }
 
         animator = GetComponent<Animator>();
-        healthSystem = GetComponent<HealthSystem>();
 
         //original y pos
         originalLookAtYPos = lookAt.transform.position.y;
@@ -174,6 +172,8 @@ public class TankAI : MonoBehaviour
             {
                 if (distanceToPlayer > chaser.stoppingDistance)
                 {
+                    Debug.Log("DestinationSet");
+
                     chaser.SetDestination(player.position);
                 }
                 else

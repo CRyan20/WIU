@@ -173,6 +173,7 @@ public class TankAI : MonoBehaviour
                 if (distanceToPlayer > chaser.stoppingDistance)
                 {
                     Debug.Log("DestinationSet");
+
                     chaser.SetDestination(player.position);
                 }
                 else

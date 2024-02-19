@@ -18,13 +18,12 @@ public class PlayerManager : MonoBehaviour
     {
         if (photonView.IsMine)
         {
-            Debug.Log("testing");
             CreateController();
         }
     }
 
     void CreateController()
     {
-        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Player"), Vector3.zero, Quaternion.identity);
     }
 }

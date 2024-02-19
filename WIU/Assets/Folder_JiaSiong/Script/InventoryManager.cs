@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -17,12 +18,22 @@ public class InventoryManager : MonoBehaviour
     private Dictionary<int, PickableItem> inventoryItems = new Dictionary<int, PickableItem>();
     private GameObject[] invItemPrefabs;
     private bool isPickingUp = false; // Flag to prevent multiple pickups
+    private PhotonView photonView;
+
+    void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     void Start()
     {
         invItemPrefabs = new GameObject[inventorySlots.Length];
     }
     void Update()
     {
+        //if (!photonView.IsMine)
+        //    return;
+
         HandleSlotSelectionInput();
 
         // Check for key input to pick up and drop items
@@ -118,32 +129,65 @@ public class InventoryManager : MonoBehaviour
     {
         if (inventoryItems.ContainsKey(selectedSlotIndex))
         {
-            PickableItem itemToDrop = inventoryItems[selectedSlotIndex];
+            photonView.RPC("DropItem", RpcTarget.AllBuffered);
 
-            // Get the original prefab of the item
-            GameObject originalPrefab = itemToDrop.itemData.itemPrefab;
+            //PickableItem itemToDrop = inventoryItems[selectedSlotIndex];
 
-            // Instantiate a new item based on the original prefab
-            GameObject droppedItem = Instantiate(originalPrefab, transform.position + transform.forward * 1f, Quaternion.identity);
+            //// Get the original prefab of the item
+            //GameObject originalPrefab = itemToDrop.itemData.itemPrefab;
 
-            // Set the position and activate the dropped item in the scene
-            droppedItem.SetActive(true);
+            //// Instantiate a new item based on the original prefab
+            //GameObject droppedItem = Instantiate(originalPrefab, transform.position + transform.forward * 1f, Quaternion.identity);
 
-            // Remove the item from the inventory
-            inventoryItems.Remove(selectedSlotIndex);
+            //// Set the position and activate the dropped item in the scene
+            //droppedItem.SetActive(true);
 
-            // Destroy the instantiated inventory item prefab for the selected slot
-            Destroy(invItemPrefabs[selectedSlotIndex]);
+            //// Remove the item from the inventory
+            //inventoryItems.Remove(selectedSlotIndex);
 
-            // Clear the reference in the array
-            invItemPrefabs[selectedSlotIndex] = null;
+            //// Destroy the instantiated inventory item prefab for the selected slot
+            //Destroy(invItemPrefabs[selectedSlotIndex]);
 
-            // Apply a force to the dropped item to simulate it falling down
-            Rigidbody droppedItemRb = droppedItem.GetComponent<Rigidbody>();
-            if (droppedItemRb != null)
-            {
-                droppedItemRb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            }
+            //// Clear the reference in the array
+            //invItemPrefabs[selectedSlotIndex] = null;
+
+            //// Apply a force to the dropped item to simulate it falling down
+            //Rigidbody droppedItemRb = droppedItem.GetComponent<Rigidbody>();
+            //if (droppedItemRb != null)
+            //{
+            //    droppedItemRb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            //}
+        }
+    }
+
+    [PunRPC]
+    void DropItem()
+    {
+        PickableItem itemToDrop = inventoryItems[selectedSlotIndex];
+
+        // Get the original prefab of the item
+        GameObject originalPrefab = itemToDrop.itemData.itemPrefab;
+
+        // Instantiate a new item based on the original prefab
+        GameObject droppedItem = Instantiate(originalPrefab, transform.position + transform.forward * 1f, Quaternion.identity);
+
+        // Set the position and activate the dropped item in the scene
+        droppedItem.SetActive(true);
+
+        // Remove the item from the inventory
+        inventoryItems.Remove(selectedSlotIndex);
+
+        // Destroy the instantiated inventory item prefab for the selected slot
+        Destroy(invItemPrefabs[selectedSlotIndex]);
+
+        // Clear the reference in the array
+        invItemPrefabs[selectedSlotIndex] = null;
+
+        // Apply a force to the dropped item to simulate it falling down
+        Rigidbody droppedItemRb = droppedItem.GetComponent<Rigidbody>();
+        if (droppedItemRb != null)
+        {
+            droppedItemRb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
     }
 
@@ -170,6 +214,7 @@ public class InventoryManager : MonoBehaviour
                         ShowPickupText("Picked up " + pickableItem.itemData.itemName);
 
                         // Pick up the item
+                        //photonView.RPC("PickUpItem", RpcTarget.AllBuffered, pickableItem);
                         PickUpItem(pickableItem);
                         pickupbool = false;
                     }
@@ -184,7 +229,7 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-
+    //[PunRPC]
     void PickUpItem(PickableItem item)
     {
         // Add the item to the inventory

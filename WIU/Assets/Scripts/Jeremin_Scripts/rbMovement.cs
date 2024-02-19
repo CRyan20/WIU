@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 public class rbMovement : MonoBehaviour
 {
@@ -22,15 +23,35 @@ public class rbMovement : MonoBehaviour
     bool isSprinting = false;
     float standingHeight;
 
+    private InventoryManager inventoryManager;
+
+    private PhotonView photonView;
+
+    void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
+        inventoryManager = GetComponent<InventoryManager>();
         standingHeight = transform.localScale.y; // Store the standing height
+
+        if (!photonView.IsMine)
+        {
+            Destroy(GetComponentInChildren<Camera>().gameObject);
+        }
     }
 
     void Update()
     {
+        if (!photonView)
+        {
+            return;
+        }
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && rb.velocity.y < 0)
@@ -92,6 +113,18 @@ public class rbMovement : MonoBehaviour
         {
             rb.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * gravity), ForceMode.VelocityChange);
             animator.SetTrigger("jumpTrigger");
+        }
+
+        // Check for pickup when player presses the "F" key
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            inventoryManager.TryPickupItem();
+        }
+
+        // Check for dropping when player presses the "G" key
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            inventoryManager.TryDropItem();
         }
 
         rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);

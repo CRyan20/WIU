@@ -7,7 +7,7 @@ public class rbMovement : MonoBehaviour
     public float walkSpeed = 3f;
     public float sprintSpeed = 6f;
     public float gravity = -9.81f;
-    public float jumpHeight = 3f;
+    public float jumpHeight = 100f;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;

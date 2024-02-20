@@ -201,7 +201,7 @@ public class TankAI : MonoBehaviour
                         currState = EnemyState.ATTACK;
                         animator.SetBool("Attack", true);
                         animator.SetBool("Chasing", false);
-                        animator.SetBool("Walking", false);
+                        animator.SetBool("Walking", false); 
                         return;
                     }
                 }

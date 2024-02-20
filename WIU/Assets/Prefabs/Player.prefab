@@ -590,8 +590,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 853956369707025298}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.55, z: 0}
+  m_LocalRotation: {x: -0, y: -0.000000029802322, z: -4.5474735e-13, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5499997, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6662,7 +6662,6 @@ MonoBehaviour:
   FirePoint: {fileID: 853956369177214561}
   Fire: {fileID: 853956370338934348}
   HitPoint: {fileID: 1337198075554910, guid: 25c7aa9ad705fe143a4d71c1c8deb7d4, type: 3}
-  firing: {fileID: 0}
 --- !u!54 &853956370621699865
 Rigidbody:
   m_ObjectHideFlags: 0

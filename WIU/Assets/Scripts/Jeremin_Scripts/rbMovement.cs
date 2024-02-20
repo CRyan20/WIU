@@ -47,7 +47,7 @@ public class rbMovement : MonoBehaviour
 
     void Update()
     {
-        if (!photonView)
+        if (!photonView.IsMine)
         {
             return;
         }
@@ -115,17 +115,17 @@ public class rbMovement : MonoBehaviour
             animator.SetTrigger("jumpTrigger");
         }
 
-        // Check for pickup when player presses the "F" key
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            inventoryManager.TryPickupItem();
-        }
+        //// Check for pickup when player presses the "F" key
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    inventoryManager.TryPickupItem();
+        //}
 
-        // Check for dropping when player presses the "G" key
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            inventoryManager.TryDropItem();
-        }
+        //// Check for dropping when player presses the "G" key
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    inventoryManager.TryDropItem();
+        //}
 
         rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
     }

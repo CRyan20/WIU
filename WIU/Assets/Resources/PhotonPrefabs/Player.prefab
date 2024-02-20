@@ -2010,6 +2010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592afdf09829817469862efcb25b25da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventoryCanvas: {fileID: 807846586}
   selectionIndicator: {fileID: 6156272793594029050}
   invItemPrefab: {fileID: 8876090062816840116, guid: db6584927b17297468ef7cc26c0eacf5,
     type: 3}
@@ -2152,6 +2153,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Slot Select Gameobject
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156272795038732639, guid: a8fa811e032311c4a95fd4c3e44a80f1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8fa811e032311c4a95fd4c3e44a80f1, type: 3}

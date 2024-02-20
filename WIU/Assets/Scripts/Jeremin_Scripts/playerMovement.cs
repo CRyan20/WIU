@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class playerMovement : MonoBehaviour
 {
@@ -25,15 +26,30 @@ public class playerMovement : MonoBehaviour
     bool isSprinting = false;
     float standingHeight;
 
+    PhotonView photonView;
+
+    void Awake()
+    {
+        photonView = GetComponent<PhotonView>();    
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponentInChildren<Animator>(); // Get the Animator component
+
+        if(!photonView.IsMine)
+        {
+            Destroy(GetComponentInChildren<Camera>().gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!photonView.IsMine)
+            return;
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)

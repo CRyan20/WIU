@@ -7,7 +7,7 @@ public class shooting : MonoBehaviour
     public Transform FirePoint;
     public GameObject Fire;
     public GameObject HitPoint;
-    public AudioSource firing;
+    //public AudioSource firing;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +21,7 @@ public class shooting : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Shooting();
-            firing.Play();
+            //firing.Play();
         }
     }
 
@@ -31,11 +31,11 @@ public class shooting : MonoBehaviour
 
         if (Physics.Raycast(FirePoint.position, transform.TransformDirection(Vector3.forward), out hit, 100))
         {
-            Debug.DrawRay(FirePoint.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
+            Debug.DrawLine(FirePoint.position, hit.point, Color.red);
 
             Fire.GetComponent<ParticleSystem>().Play();
             GameObject a = Instantiate(Fire, FirePoint.position, Quaternion.identity);
-            GameObject b = Instantiate(HitPoint, hit.point, Quaternion.identity);
+            GameObject b = Instantiate(HitPoint, hit.point, Quaternion.identity); 
 
             Destroy(a, 1);
             Destroy(b, 1);

@@ -13,8 +13,7 @@ public class TankAI : MonoBehaviour
         PATROL,
         IDLE,
         CHASE,
-        ATTACK,
-        DEAD
+        ATTACK
     }
     [Header("Enemy Data")]
     public NavMeshAgent chaser;
@@ -39,6 +38,9 @@ public class TankAI : MonoBehaviour
     private float cooldownDuration = 6.0f;
     // Add a variable to store the original chase speed
     private float originalChaseSpeed;
+
+    [Header("Attack State")]
+    public float attackRange = 1f;
 
     [Header("Animation")]
     public Animator animator;
@@ -170,12 +172,14 @@ public class TankAI : MonoBehaviour
     void Chase()
     {
         chaser.speed = chaseSpeed;
+
         foreach (Transform player in players)
         {
             if (player == null)
                 continue;
 
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
             if (distanceToPlayer < chaseRange)
             {
                 if (!isCooldownActive)
@@ -189,6 +193,17 @@ public class TankAI : MonoBehaviour
                     chaser.SetDestination(player.position);
                     animator.SetBool("Chasing", true);
                     animator.SetBool("Walking", false);
+
+                    // Check if the player is close enough to trigger an attack
+                    if (distanceToPlayer <= chaser.stoppingDistance + attackRange)
+                    {
+                        // Player is in attack range, transition to ATTACK state
+                        currState = EnemyState.ATTACK;
+                        animator.SetBool("Attack", true);
+                        animator.SetBool("Chasing", false);
+                        animator.SetBool("Walking", false);
+                        return;
+                    }
                 }
                 else
                 {
@@ -207,36 +222,18 @@ public class TankAI : MonoBehaviour
                         isCooldownActive = false; // Reset cooldown when changing state
                     }
                 }
-
-                // Check if player is still in range
-                if (!IsPlayerInFOV(player.position))
-                {
-                    // Player is out of range, transition to PATROL state
-                    currState = EnemyState.PATROL;
-                    animator.SetBool("Chasing", false);
-                    animator.SetBool("Walking", true);
-                    isCooldownActive = false; // Reset cooldown when changing state
-                    // Restore original chase speed
-                    chaser.speed = originalChaseSpeed;
-                }
-            }
-            if (IsPlayerInFOV(player.position))
-            {
-                return;
-            }
-
-            else
-            {
-                // If not in range, make it patrol state
-                currState = EnemyState.PATROL;
-                animator.SetBool("Chasing", false);
-                animator.SetBool("Walking", true);
-                isCooldownActive = false; // Reset cooldown when changing state
-                                          // Restore original chase speed
-                chaser.speed = originalChaseSpeed;
             }
         }
+
+        // If none of the players are in range, transition to PATROL state
+        currState = EnemyState.PATROL;
+        animator.SetBool("Chasing", false);
+        animator.SetBool("Walking", true);
+        isCooldownActive = false; // Reset cooldown when changing state
+                                  // Restore original chase speed
+        chaser.speed = originalChaseSpeed;
     }
+
     IEnumerator SlowDownCooldown()
     {
         isCooldownActive = true;

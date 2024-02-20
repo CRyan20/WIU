@@ -1,10 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PickableItem : MonoBehaviour
 {
     public ItemData itemData; // Reference to the ScriptableObject containing item data
+    public Photon.Realtime.Player Owner;
 
     void OnTriggerEnter(Collider other)
     {
@@ -13,7 +15,10 @@ public class PickableItem : MonoBehaviour
             InventoryManager inventoryManager = other.GetComponent<InventoryManager>();
             if (inventoryManager != null)
             {
-                inventoryManager.TryPickupItem();
+                // Store the viewID of the item
+                int viewID = GetComponent<PhotonView>().ViewID;
+
+                inventoryManager.TryPickupItem(viewID);
             }
         }
     }

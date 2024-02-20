@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
+using System.IO;
 
 public class InventoryManager : MonoBehaviour
 {
+    public GameObject inventoryCanvas;
     public GameObject selectionIndicator;
     public GameObject invItemPrefab; // Prefab of the inventory item game object
     public GameObject[] inventorySlots;
@@ -19,6 +22,8 @@ public class InventoryManager : MonoBehaviour
     private GameObject[] invItemPrefabs;
     private bool isPickingUp = false; // Flag to prevent multiple pickups
     private PhotonView photonView;
+    private PickableItem pickableItem;
+    private GameObject nearestItem;
 
     void Awake()
     {
@@ -28,12 +33,15 @@ public class InventoryManager : MonoBehaviour
     void Start()
     {
         invItemPrefabs = new GameObject[inventorySlots.Length];
+
+        if (!photonView.IsMine)
+        {
+            inventoryCanvas.SetActive(false);
+        }
     }
     void Update()
     {
-        //if (!photonView.IsMine)
-        //    return;
-
+        if (!photonView.IsMine) return;
         HandleSlotSelectionInput();
 
         // Check for key input to pick up and drop items
@@ -42,7 +50,11 @@ public class InventoryManager : MonoBehaviour
             if (isNearItem) // Check if the player is near an item before picking up
             {
                 pickupbool = true;
-                TryPickupItem();
+                // Store the viewID of the item
+                PhotonView photonView = nearestItem.GetComponent<PhotonView>();
+                int viewID = photonView.ViewID;
+                TryPickupItem(viewID);
+
             }
         }
         else if (Input.GetKeyDown(KeyCode.G))
@@ -73,6 +85,7 @@ public class InventoryManager : MonoBehaviour
 
     void CheckNearItem(Collider collider, bool entering)
     {
+        if (!photonView.IsMine) return;
         if (collider.CompareTag("Item"))
         {
             float distance = Vector3.Distance(transform.position, collider.transform.position);
@@ -81,8 +94,9 @@ public class InventoryManager : MonoBehaviour
                 if (entering)
                 {
                     Debug.Log("Near Item");
+                    nearestItem = collider.gameObject;
                     isNearItem = true;
-                    PickableItem pickableItem = collider.GetComponent<PickableItem>();
+                    PickableItem pickableItem = nearestItem.GetComponent<PickableItem>();
                     if (pickableItem != null)
                     {
                         ShowPickupText("Press F to pick up " + pickableItem.itemData.itemName);
@@ -129,7 +143,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (inventoryItems.ContainsKey(selectedSlotIndex))
         {
-            photonView.RPC("DropItem", RpcTarget.AllBuffered);
+            photonView.RPC("DropItem", RpcTarget.AllBuffered, selectedSlotIndex);
 
             //PickableItem itemToDrop = inventoryItems[selectedSlotIndex];
 
@@ -161,27 +175,41 @@ public class InventoryManager : MonoBehaviour
     }
 
     [PunRPC]
-    void DropItem()
+    void DropItem(int slotIndex)
     {
-        PickableItem itemToDrop = inventoryItems[selectedSlotIndex];
+        if (!photonView.IsMine) return;
+
+        slotIndex = selectedSlotIndex;
+
+        PickableItem itemToDrop = inventoryItems[slotIndex];
+
 
         // Get the original prefab of the item
         GameObject originalPrefab = itemToDrop.itemData.itemPrefab;
-
+        //GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Key"), transform.position + transform.forward * 1f, Quaternion.identity);
         // Instantiate a new item based on the original prefab
-        GameObject droppedItem = Instantiate(originalPrefab, transform.position + transform.forward * 1f, Quaternion.identity);
-
+        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", originalPrefab.name), transform.position + transform.forward * 1f, Quaternion.identity);
         // Set the position and activate the dropped item in the scene
         droppedItem.SetActive(true);
 
         // Remove the item from the inventory
-        inventoryItems.Remove(selectedSlotIndex);
+        inventoryItems.Remove(slotIndex);
 
         // Destroy the instantiated inventory item prefab for the selected slot
-        Destroy(invItemPrefabs[selectedSlotIndex]);
+        Destroy(invItemPrefabs[slotIndex]);
 
         // Clear the reference in the array
-        invItemPrefabs[selectedSlotIndex] = null;
+        invItemPrefabs[slotIndex] = null;
+
+        Debug.Log(invItemPrefab);
+
+        // Destroy the instantiated inventory item prefab for the selected slot
+        Destroy(inventorySlots[slotIndex].GetComponentsInChildren<MonoBehaviour>()[2].gameObject);
+
+        //UpdateInventoryUI();
+
+        // Clear the reference in the array
+        //invItemPrefabs[slotIndex] = null;
 
         // Apply a force to the dropped item to simulate it falling down
         Rigidbody droppedItemRb = droppedItem.GetComponent<Rigidbody>();
@@ -193,7 +221,7 @@ public class InventoryManager : MonoBehaviour
 
 
 
-    public void TryPickupItem()
+    public void TryPickupItem(int viewID)
     {
         Collider[] colliders = new Collider[10]; // Adjust the size based on your needs
         int colliderCount = Physics.OverlapSphereNonAlloc(transform.position, 2f, colliders);
@@ -205,7 +233,7 @@ public class InventoryManager : MonoBehaviour
             if (collider.CompareTag("Item") && pickupbool == true)
             {
                 PickableItem pickableItem = collider.GetComponent<PickableItem>();
-                if (pickableItem != null)
+                if (pickableItem != null && pickableItem.Owner == null)
                 {
                     // Check if the selected slot is already occupied
                     if (!inventoryItems.ContainsKey(selectedSlotIndex))
@@ -214,8 +242,12 @@ public class InventoryManager : MonoBehaviour
                         ShowPickupText("Picked up " + pickableItem.itemData.itemName);
 
                         // Pick up the item
-                        //photonView.RPC("PickUpItem", RpcTarget.AllBuffered, pickableItem);
-                        PickUpItem(pickableItem);
+                        pickableItem.Owner = PhotonNetwork.LocalPlayer;
+                        //photonView.RPC("PickUpItem", RpcTarget.MasterClient, viewID);
+
+                        //PickUpItem(photonView.ViewID, viewID);
+                        photonView.RPC("PickUpItem", RpcTarget.All, photonView.ViewID, viewID);
+                        //PickUpItem(pickableItem);
                         pickupbool = false;
                     }
                     else
@@ -229,41 +261,66 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    //[PunRPC]
-    void PickUpItem(PickableItem item)
+    [PunRPC]
+    void PickUpItem(int myId, int viewID)
     {
-        // Add the item to the inventory
-        inventoryItems[selectedSlotIndex] = item;
-
-        // Check if the slot already has an inventory prefab
-        if (invItemPrefabs[selectedSlotIndex] != null)
+        Debug.Log(photonView.ViewID);
+        // Find the item GameObject using the PhotonView ID
+        GameObject itemGO = PhotonView.Find(viewID).gameObject;
+        GameObject myGO = PhotonView.Find(myId).gameObject;
+        PickableItem pickableItem = itemGO.GetComponent<PickableItem>();
+        InventoryManager invent = myGO.GetComponent<InventoryManager>();
+        Debug.Log(invent.photonView.ViewID);
+        if (pickableItem != null)
         {
-            // Destroy the existing inventory prefab for the selected slot
-            Destroy(invItemPrefabs[selectedSlotIndex]);
+            // Get the ItemData from the PickableItem
+            ItemData itemData = pickableItem.itemData;
+            //PickableItem newItem = new PickableItem();
+            //newItem.itemData = itemData;
+            //newItem.Owner = PhotonNetwork.LocalPlayer;
+            // Add the new PickableItem instance to the inventory
+            inventoryItems[selectedSlotIndex] = pickableItem;
+            
+            // Instantiate the inventory item game object
+            GameObject newItemGO = Instantiate(invItemPrefab, Vector3.zero, Quaternion.identity);
+            newItemGO.SetActive(true);
+
+            // Set the parent of the instantiated object to the selected slot
+            newItemGO.transform.SetParent(inventorySlots[selectedSlotIndex].transform);
+
+            // Set the position of the instantiated object to (0, 0, 0)
+            newItemGO.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+            // Set the scale of the instantiated object to (0.75, 0.75, 0.75)
+            newItemGO.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+
+            // Set the sprite of the inventory item game object based on the ItemData
+            Image invItemImage = newItemGO.GetComponent<Image>();
+            invItemImage.sprite = itemData.itemIcon;
+
+            // Hide the pickup text
+            pickupText.gameObject.SetActive(false);
+            //newItemGO.transform.root.gameObject.SetActive(false);
+            //if (PhotonNetwork.IsMasterClient)
+            //{
+            //    // Call the RPC to deactivate the item on all clients
+            //    photonView.RPC("DeactivateItem", RpcTarget.All, viewID);
+            //}
+
+            // Show pickup text and hide it after 2 seconds (adjust the time as needed)
+            ShowPickupText("Picked up item: " + itemData.itemName);
         }
+        //Destroy(inventorySlots[selectedSlotIndex].gameObject);
+        Destroy(itemGO);
 
-        // Instantiate the inventory item game object
-        invItemPrefabs[selectedSlotIndex] = Instantiate(invItemPrefab, Vector3.zero, Quaternion.identity);
-        invItemPrefabs[selectedSlotIndex].SetActive(true);
+    }
 
-        // Set the parent of the instantiated object to the selected slot
-        invItemPrefabs[selectedSlotIndex].transform.SetParent(inventorySlots[selectedSlotIndex].transform);
-
-        // Set the position of the instantiated object to (0, 0, 0)
-        invItemPrefabs[selectedSlotIndex].GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-        // Set the scale of the instantiated object to (0.75, 0.75, 0.75)
-        invItemPrefabs[selectedSlotIndex].transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-
-        // Set the sprite of the inventory item game object based on the ScriptableObject
-        Image invItemImage = invItemPrefabs[selectedSlotIndex].GetComponent<Image>();
-        invItemImage.sprite = item.itemData.itemIcon;
-
+    //[PunRPC]
+    void DeactivateItem(GameObject go)
+    {
         // Deactivate the item in the scene
-        item.gameObject.SetActive(false);
-
-        // Show pickup text and hide it after 2 seconds (adjust the time as needed)
-        ShowPickupText("Picked up item: " + item.itemData.itemName);
+        if(go!=null)
+        go.SetActive(false);
     }
 
 
@@ -291,5 +348,4 @@ public class InventoryManager : MonoBehaviour
         // Hide the pickup text
         pickupText.gameObject.SetActive(false);
     }
-
 }

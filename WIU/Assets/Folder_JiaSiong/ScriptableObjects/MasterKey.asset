@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 937224b53707cfc45830d2dcaa7f4023, type: 3}
-  m_Name: TestItem
+  m_Name: MasterKey
   m_EditorClassIdentifier: 
-  itemName: Key
-  itemIcon: {fileID: 1052618702, guid: 844a218d5d55ecd4db94cb2854a9f563, type: 3}
-  itemPrefab: {fileID: 135077168455863472, guid: e11fbe4194f829c4c8e6275e256dc1ae, type: 3}
-  description: A key
+  itemName: Master key
+  itemIcon: {fileID: 1752657643, guid: 844a218d5d55ecd4db94cb2854a9f563, type: 3}
+  itemPrefab: {fileID: 0}
+  description: Key for main door
   maxStack: 1
+  AmmoCount: 0
+  MaxAmmoCount: 0

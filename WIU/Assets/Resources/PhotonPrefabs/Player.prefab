@@ -1941,7 +1941,6 @@ MonoBehaviour:
   FirePoint: {fileID: 0}
   Fire: {fileID: 0}
   HitPoint: {fileID: 1337198075554910, guid: 25c7aa9ad705fe143a4d71c1c8deb7d4, type: 3}
-  firing: {fileID: 0}
 --- !u!54 &853956370621699865
 Rigidbody:
   m_ObjectHideFlags: 0

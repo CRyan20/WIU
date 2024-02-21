@@ -187,7 +187,7 @@ MonoBehaviour:
   currState: 1
   chaser: {fileID: 541914658}
   players: []
-  lookAt: {fileID: 931852774}
+  lookAt: {fileID: 0}
   lookAtOffset: 0.5
   patrolSpeed: 1
   patrolRange: 5

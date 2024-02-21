@@ -30,17 +30,17 @@ public class PlayerController : MonoBehaviour
         HandleRotation();
         HandleMovement();
 
-        // Check for pickup when player presses the "F" key
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            inventoryManager.TryPickupItem();
-        }
+        //// Check for pickup when player presses the "F" key
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    inventoryManager.TryPickupItem();
+        //}
 
-        // Check for dropping when player presses the "G" key
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            inventoryManager.TryDropItem();
-        }
+        //// Check for dropping when player presses the "G" key
+        //if (Input.GetKeyDown(KeyCode.G))
+        //{
+        //    inventoryManager.TryDropItem();
+        //}
 
         // Check for jumping when player presses the space key
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)

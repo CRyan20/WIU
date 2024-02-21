@@ -23,6 +23,10 @@ public class rbMovement : MonoBehaviour
     bool isSprinting = false;
     float standingHeight;
 
+    public AudioSource Sprint;
+    public AudioSource Walk;
+    public AudioSource Jump;
+
     private InventoryManager inventoryManager;
 
     private PhotonView photonView;
@@ -86,6 +90,31 @@ public class rbMovement : MonoBehaviour
 
         animator.SetBool("isStrafingRunningL", isSprinting && x < 0);
 
+        if (isMoving && !isCrouching && !isSprinting && isGrounded)
+        {
+            if (!Walk.isPlaying)
+            {
+                Walk.Play();
+            }
+        }
+        else
+        {
+            Walk.Stop();
+        }
+
+   
+        if (isSprinting && isGrounded)
+        {
+            if (!Sprint.isPlaying)
+            {
+                Sprint.Play();
+            }
+        }
+        else
+        {
+            Sprint.Stop();
+        }
+
         if (Input.GetKeyDown(crouchKey) && isGrounded)
         {
             isCrouching = !isCrouching;
@@ -102,17 +131,23 @@ public class rbMovement : MonoBehaviour
 
         if (Input.GetKeyDown(sprintKey) && !isCrouching)
         {
+            Sprint.Play();
             isSprinting = true;
+
+           
         }
         if (Input.GetKeyUp(sprintKey) || isCrouching)
         {
+            Sprint.Stop();
             isSprinting = false;
+            
         }
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * gravity), ForceMode.VelocityChange);
             animator.SetTrigger("jumpTrigger");
+            Jump.Play();
         }
 
         //// Check for pickup when player presses the "F" key

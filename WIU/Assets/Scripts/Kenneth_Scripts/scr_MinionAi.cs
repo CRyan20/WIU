@@ -5,7 +5,8 @@ using System.Collections;
 public class scr_MinionAi : MonoBehaviour
 {
     public NavMeshAgent agent;
-    public Transform target;
+    public Transform[] players;
+    //public Transform target;
     public LayerMask whatIsGround, whatIsPlayer;
     private Animator animator;
     private HealthSystem healthSystem;
@@ -52,13 +53,25 @@ public class scr_MinionAi : MonoBehaviour
     private void Awake()
     {
         //target = GameObject.Find("Player").transform;
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        //target = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
+        // Find all with player tag
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+        players = new Transform[playerObjects.Length];
+        for (int i = 0; i < playerObjects.Length; i++)
+        {
+            players[i] = playerObjects[i].transform;
+        }
+        if (players == null || players.Length == 0)
+        {
+            Debug.LogError("Player not found");
+        }
+
         isDead = false;
         healthSystem = GetComponent<HealthSystem>();
     }
@@ -68,6 +81,7 @@ public class scr_MinionAi : MonoBehaviour
         // Check if player in sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        CheckDamage();
 
         switch (currentState)
         {
@@ -180,11 +194,14 @@ public class scr_MinionAi : MonoBehaviour
 
     private void ChasePlayer()
     {
-        
-        animator.SetBool("isChasing", true);
-        agent.SetDestination(target.position);
-        agent.speed = 5;
-        agent.acceleration = 6;
+
+        foreach (Transform player in players)
+        {
+            animator.SetBool("isChasing", true);
+            agent.SetDestination(player.position);
+            agent.speed = 5;
+            agent.acceleration = 6; 
+        }
     }
 
     private void AttackPlayer()
@@ -192,7 +209,10 @@ public class scr_MinionAi : MonoBehaviour
         // Make sure enemy does not move
         agent.SetDestination(transform.position);
 
-        transform.LookAt(target);
+        foreach (Transform player in players)
+        {
+            transform.LookAt(player); 
+        }
 
         // Ensure rotation around x-axis is zero
         Vector3 newRotation = transform.rotation.eulerAngles;
@@ -230,19 +250,22 @@ public class scr_MinionAi : MonoBehaviour
         if (healthSystem.currentHealth <= 0f && !isDead)
         {
             currentState = MinionState.Dead;
+            Death();
         }
     }
 
     private void Death()
     {
         isDead = true;
-        animator.SetBool("isDead", true);
-        DestroyEnemy();
+        agent.velocity = Vector3.zero;  
+        StartCoroutine(DestroyEnemy());
     }
 
-    private void DestroyEnemy()
+    IEnumerator DestroyEnemy()
     {
-        Destroy(gameObject, 3f);
+        animator.SetBool("isDead", true);
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()

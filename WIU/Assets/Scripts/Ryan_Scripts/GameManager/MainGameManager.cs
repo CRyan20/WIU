@@ -45,4 +45,34 @@ public class MainGameManager : MonoBehaviour
             obj.transform.parent = keys.transform;
         }
     }
+
+    public void SpawnTank()
+    {
+        //Positions taken from the existing ghosts
+        Vector3[] positionArray = new[] { new Vector3(-5.3f, 0f, -3.1f) };
+
+        //loop through the array position
+        for (int i = 0; i < positionArray.Length; ++i)
+        {
+            // Create a Chaser prefab
+            GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Tank"), positionArray[i], Quaternion.identity);
+
+            obj.transform.parent = enemies.transform;
+        }
+    }
+
+    public void SpawnMinion()
+    {
+        //Positions taken from the existing ghosts
+        Vector3[] positionArray = new[] { new Vector3(-5.3f, 0f, -3.1f) };
+
+        //loop through the array position
+        for (int i = 0; i < positionArray.Length; ++i)
+        {
+            // Create a Chaser prefab
+            GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Minion"), positionArray[i], Quaternion.identity);
+
+            obj.transform.parent = enemies.transform;
+        }
+    }
 }

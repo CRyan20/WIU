@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8738276364897261474}
   - component: {fileID: 6818572189205554024}
   - component: {fileID: 7387362621191342564}
+  - component: {fileID: -3249907479697647589}
   m_Layer: 0
   m_Name: MorgueTable
   m_TagString: Untagged
@@ -98,3 +99,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4619786236174134555, guid: 9aa03e9d326119e4299299e46a91b4cb, type: 3}
+--- !u!65 &-3249907479697647589
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5017171852181357245}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.021329748, y: 0.0068801893, z: 0.008042261}
+  m_Center: {x: 0, y: 0.0034190048, z: 2.3283062e-10}

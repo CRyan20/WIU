@@ -8,6 +8,7 @@ public class shootingV2 : MonoBehaviour
     public Camera playerCamera; // Reference to the player's camera
     public GameObject Fire;
     public GameObject HitPoint;
+    public AudioSource Firing;
 
     void Update()
     {
@@ -20,8 +21,7 @@ public class shootingV2 : MonoBehaviour
 
     void Shoot()
     {
-        // Play firing sound
-        //firingSound.Play();
+        Firing.Play();
 
         // Create a ray from the camera's position forward
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);

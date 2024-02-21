@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 21726823}
-  target: {fileID: 0}
+  players: []
   whatIsGround:
     serializedVersion: 2
     m_Bits: 128
@@ -1463,6 +1463,16 @@ PrefabInstance:
     - target: {fileID: 6348105044278635542, guid: 227ee07e9e5b7914ba8fbb8f430be9a5,
         type: 3}
       propertyPath: target
+      value: 
+      objectReference: {fileID: 1602186214}
+    - target: {fileID: 6348105044278635542, guid: 227ee07e9e5b7914ba8fbb8f430be9a5,
+        type: 3}
+      propertyPath: players.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6348105044278635542, guid: 227ee07e9e5b7914ba8fbb8f430be9a5,
+        type: 3}
+      propertyPath: players.Array.data[0]
       value: 
       objectReference: {fileID: 1602186214}
     m_RemovedComponents: []

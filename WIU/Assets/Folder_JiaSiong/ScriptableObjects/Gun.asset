@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 937224b53707cfc45830d2dcaa7f4023, type: 3}
+  m_Name: Gun
+  m_EditorClassIdentifier: 
+  itemName: Gun
+  itemIcon: {fileID: 21300000, guid: 8d965e74a0a97b44ba028a08003f2ce0, type: 3}
+  itemPrefab: {fileID: 6343240162541803841, guid: 9a6fe1a88c9dcbc41ae39590e7830d26,
+    type: 3}
+  description: A gun
+  maxStack: 1
+  AmmoCount: 12
+  MaxAmmoCount: 360

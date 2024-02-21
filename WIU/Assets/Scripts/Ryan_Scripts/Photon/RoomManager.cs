@@ -39,8 +39,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
             if (PhotonNetwork.IsMasterClient)
             {
-                //if (GameObject.Find("Chaser") != null)
-                //MainGameManager.Instance.SpawnChaser();
+                MainGameManager.Instance.SpawnChaser();
 
                 MainGameManager.Instance.SpawnKey();
             }

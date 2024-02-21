@@ -15,6 +15,7 @@ public class TankAI : MonoBehaviour
         CHASE,
         ATTACK
     }
+
     [Header("Enemy Data")]
     public NavMeshAgent chaser;
     public Transform[] players;
@@ -26,17 +27,15 @@ public class TankAI : MonoBehaviour
 
     [Header("Patrol State")]
     public float patrolSpeed = 1f;
-    public Transform[] waypoints;
-    public float waypointRange = 3f; //range when enemy swaps to next waypoint
-    private int currWaypointIndex = 1;
-    private bool hasReachedWaypoint = false;
+    public float patrolRange = 5f; // Range for random patrol movement
+    private float nextTurnTime;
+    private bool isRoaming = false;
 
     [Header("Chase State")]
-    public float chaseRange = 15f;
-    public float chaseSpeed = 5f;
+    public float chaseRange = 2f;
+    public float chaseSpeed = 3f;
     private bool isCooldownActive = false;
     private float cooldownDuration = 6.0f;
-    // Add a variable to store the original chase speed
     private float originalChaseSpeed;
 
     [Header("Attack State")]
@@ -46,15 +45,14 @@ public class TankAI : MonoBehaviour
     public Animator animator;
 
     [Header("Field of View")]
-    public float fovAngle = 150f; // Field of view angle
-    public float viewDistance = 7f; // Maximum distance the AI can see
+    public float fovAngle = 150f;
+    public float viewDistance = 7f;
 
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         // Find all with player tag
@@ -64,6 +62,7 @@ public class TankAI : MonoBehaviour
         {
             players[i] = playerObjects[i].transform;
         }
+
         if (players == null || players.Length == 0)
         {
             Debug.LogError("Player not found");
@@ -73,7 +72,6 @@ public class TankAI : MonoBehaviour
 
         //original y pos
         originalLookAtYPos = lookAt.transform.position.y;
-        // Position the eyes relative to the enemy's position and forward direction
         Vector3 lookAtPosition = transform.position + transform.forward * lookAtOffset;
         lookAtPosition.y = originalLookAtYPos;
         lookAt.transform.position = lookAtPosition;
@@ -82,11 +80,9 @@ public class TankAI : MonoBehaviour
         //start state is patrol
         currState = EnemyState.PATROL;
 
-        // Delayed initialization after a short delay (adjust delay time as needed)
         StartCoroutine(DelayedInitialization(1.0f));
     }
 
-    // Update is called once per frame
     void Update()
     {
         switch (currState)
@@ -104,17 +100,18 @@ public class TankAI : MonoBehaviour
                 Attack();
                 break;
         }
-        if(chaser.speed ==0)
+
+        if (chaser.velocity.magnitude < 0.1f)
         {
             animator.SetBool("Walking", false);
             animator.SetBool("Chasing", false);
         }
     }
+
     IEnumerator DelayedInitialization(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        // Find all with player tag
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
         players = new Transform[playerObjects.Length];
         for (int i = 0; i < playerObjects.Length; i++)
@@ -128,50 +125,78 @@ public class TankAI : MonoBehaviour
         }
     }
 
+
     void Patrol()
     {
         chaser.speed = patrolSpeed;
-        // Iterate through each player in the players array
+
         foreach (Transform player in players)
         {
             if (player == null)
                 continue;
 
-            if (Vector3.Distance(transform.position, player.position) < chaseRange)
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+            if (distanceToPlayer < chaseRange)
             {
-                //switch to chase state
                 currState = EnemyState.CHASE;
                 return;
             }
         }
 
-        //if it hasnt reached waypoint
-        if (!hasReachedWaypoint)
+        // Check if it's time to turn or the tank has reached its destination
+        if (Time.time >= nextTurnTime || !chaser.pathPending && chaser.remainingDistance <= chaser.stoppingDistance)
         {
-            // Check the distance to the current waypoint
-            float distanceToWaypoint = Vector3.Distance(transform.position, waypoints[currWaypointIndex].position);
+            // Set the tank to roam
+            isRoaming = true;
 
-            // Check if the enemy is close enough to the current waypoint
-            if (distanceToWaypoint <= waypointRange)
-            {
-                // Move to the next waypoint
-                currWaypointIndex = (currWaypointIndex + 1) % waypoints.Length;
-                hasReachedWaypoint = true;
-            }
-        }
-        else
-        {
-            hasReachedWaypoint = false;
+            // Generate a new random destination within NavMesh
+            Vector3 randomDestination = RandomNavSphere(transform.position, patrolRange, -1);
+
+            // Set the new destination
+            chaser.SetDestination(randomDestination);
+
+            // Set the next turn time for a delay (adjust the delay time as needed)
+            nextTurnTime = Time.time + Random.Range(5f, 15f); // Random delay between 5 to 15 seconds
         }
 
-        // Set destination to the current waypoint
-        chaser.SetDestination(waypoints[currWaypointIndex].position);
-        animator.SetBool("Walking", true);
+        animator.SetBool("Walking", isRoaming);
+    }
+    // Helper function to generate a random destination within NavMesh
+    private Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * distance;
+
+        randomDirection += origin;
+
+        NavMeshHit navHit;
+        NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask);
+
+        return navHit.position;
+    }
+
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision detected with: " + collision.collider.name);
+
+        if (collision.collider.CompareTag("Player"))
+        {
+            Debug.Log("Player collision detected!");
+
+            chaser.velocity = Vector3.zero;
+            currState = EnemyState.ATTACK;
+            animator.SetBool("Attack", true);
+            animator.SetBool("Chasing", false);
+            animator.SetBool("Walking", false);
+        }
     }
 
     void Chase()
     {
-        chaser.speed = chaseSpeed;
+        chaser.speed = Mathf.Lerp(chaser.speed, chaseSpeed, Time.deltaTime);
+
+        bool shouldChase = false;
 
         foreach (Transform player in players)
         {
@@ -189,20 +214,21 @@ public class TankAI : MonoBehaviour
 
                 if (distanceToPlayer > chaser.stoppingDistance)
                 {
-                    // Set destination and start chasing animation
                     chaser.SetDestination(player.position);
                     animator.SetBool("Chasing", true);
                     animator.SetBool("Walking", false);
 
-                    // Check if the player is close enough to trigger an attack
                     if (distanceToPlayer <= chaser.stoppingDistance + attackRange)
                     {
-                        // Player is in attack range, transition to ATTACK state
                         currState = EnemyState.ATTACK;
                         animator.SetBool("Attack", true);
                         animator.SetBool("Chasing", false);
-                        animator.SetBool("Walking", false); 
+                        animator.SetBool("Walking", false);
                         return;
+                    }
+                    else
+                    {
+                        shouldChase = true;
                     }
                 }
                 else
@@ -210,53 +236,52 @@ public class TankAI : MonoBehaviour
                     chaser.velocity = Vector3.zero;
 
                     animator.SetBool("Chasing", false);
-                    animator.SetBool("Walking", false);
+                    animator.SetBool("Walking", true);
 
-                    // Check if player is still in range
                     if (!IsPlayerInFOV(player.position))
                     {
-                        // Player is out of range, transition to PATROL state
                         currState = EnemyState.PATROL;
                         animator.SetBool("Chasing", false);
                         animator.SetBool("Walking", false);
-                        isCooldownActive = false; // Reset cooldown when changing state
+                        isCooldownActive = false;
+                        return;
                     }
                 }
             }
         }
 
-        // If none of the players are in range, transition to PATROL state
-        currState = EnemyState.PATROL;
-        animator.SetBool("Chasing", false);
-        animator.SetBool("Walking", true);
-        isCooldownActive = false; // Reset cooldown when changing state
-                                  // Restore original chase speed
-        chaser.speed = originalChaseSpeed;
+        if (!shouldChase)
+        {
+            if (chaser.speed <= 0.1f)
+            {
+                currState = EnemyState.IDLE;
+                chaser.speed = 0f;
+            }
+            else
+            {
+                currState = EnemyState.PATROL;
+                animator.SetBool("Chasing", false);
+                animator.SetBool("Walking", true);
+                isCooldownActive = false;
+                chaser.speed = originalChaseSpeed;
+            }
+        }
     }
 
     IEnumerator SlowDownCooldown()
     {
         isCooldownActive = true;
-
-        // Slow down the tank for 3 seconds
-        chaser.speed *= 0.5f; // You can adjust the multiplier as needed
-
+        chaser.speed *= 0.5f;
         yield return new WaitForSeconds(3.0f);
-
-        // Restore the original speed after 3 seconds
         chaser.speed = originalChaseSpeed;
-
-        // Wait for the full cooldown duration before allowing another slowdown
         yield return new WaitForSeconds(cooldownDuration - 3.0f);
-
         isCooldownActive = false;
     }
+
     void Idle()
     {
-        // Implement the behavior during the IDLE state here
-        // For example, you can rotate the tank or play an idle animation
+        chaser.speed = 0f;
 
-        // Check if any player is in range to transition to CHASE state
         foreach (Transform player in players)
         {
             if (player == null)
@@ -266,30 +291,42 @@ public class TankAI : MonoBehaviour
             if (distanceToPlayer < chaseRange)
             {
                 currState = EnemyState.CHASE;
+                chaser.speed = chaseSpeed;
                 return;
             }
         }
     }
+
     void Attack()
     {
-        //health decrease, attack anim here etc
-        animator.SetBool("Walking", true);
-        animator.SetBool("Attack", true);
-
         foreach (Transform player in players)
         {
             if (player == null)
                 continue;
 
-            //not in range
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            if (distanceToPlayer > chaseRange)
+
+            if (distanceToPlayer <= chaser.stoppingDistance)
             {
+                chaser.speed = 0f;
+                animator.SetBool("Attack", true);
+                animator.SetBool("Walking", false);
+
+                Vector3 directionToPlayer = (player.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(directionToPlayer.x, 0, directionToPlayer.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            }
+            else
+            {
+                currState = EnemyState.CHASE;
+                chaser.speed = chaseSpeed;
                 animator.SetBool("Attack", false);
-                currState = EnemyState.PATROL;
+                animator.SetBool("Chasing", true);
+                animator.SetBool("Walking", false);
             }
         }
     }
+
     bool IsPlayerInFOV(Vector3 targetPosition)
     {
         Vector3 directionToTarget = targetPosition - transform.position;
@@ -312,7 +349,6 @@ public class TankAI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Draw the field of view
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, fovAngle * 0.5f, 0) * transform.forward * viewDistance);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -fovAngle * 0.5f, 0) * transform.forward * viewDistance);

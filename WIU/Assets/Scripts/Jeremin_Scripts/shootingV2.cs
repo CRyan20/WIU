@@ -12,10 +12,13 @@ public class shootingV2 : MonoBehaviour
 
     void Update()
     {
-        // Check for left mouse button click
-        if (Input.GetButtonDown("Fire1"))
+        if (PauseMenu.Instance.isPaused == false)
         {
-            Shoot();
+            // Check for left mouse button click
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Shoot();
+            }
         }
     }
 

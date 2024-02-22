@@ -80,7 +80,7 @@ public class ChaserAI : MonoBehaviour
         currState = EnemyState.PATROL;
 
         // Delayed initialization after a short delay (adjust delay time as needed)
-        StartCoroutine(DelayedInitialization(1.0f));
+        StartCoroutine(DelayedInitialization(10.0f));
     }
 
     IEnumerator DelayedInitialization(float delay)

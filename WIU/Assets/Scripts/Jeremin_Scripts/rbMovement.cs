@@ -92,14 +92,15 @@ public class rbMovement : MonoBehaviour
 
         if (isMoving && !isCrouching && !isSprinting && isGrounded)
         {
-            if (!Walk.isPlaying)
+            if (!AudioManager.instance.IsPLayingSFX("Walking"))
             {
-                Walk.Play();
+                //Walk.Play();
+                AudioManager.instance.PlaySound("Walking");
             }
         }
         else
         {
-            Walk.Stop();
+            AudioManager.instance.StopSound("Walking");
         }
 
    

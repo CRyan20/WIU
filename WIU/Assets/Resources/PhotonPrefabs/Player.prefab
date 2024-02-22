@@ -2002,10 +2002,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 100
-  playerCamera: {fileID: 7816964928550398031}
+  playerCamera: {fileID: 0}
   Fire: {fileID: 7816964928992232851}
   HitPoint: {fileID: 1337198075554910, guid: 25c7aa9ad705fe143a4d71c1c8deb7d4, type: 3}
-  Firing: {fileID: -6544790767856243972}
 --- !u!114 &4989540264626550404
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -49,9 +49,9 @@ public class TankAI : MonoBehaviour
     public float viewDistance = 7f;
 
     [Header("Audio")]
-    public AudioSource idleSound;
-    public AudioSource chaseSound;
-    public AudioSource attackSound;
+    public AudioSource idleAudioSource;
+    public AudioSource chaseAudioSource;
+    public AudioSource attackAudioSource;
 
     void Awake()
     {
@@ -88,8 +88,8 @@ public class TankAI : MonoBehaviour
         StartCoroutine(DelayedInitialization(1.0f));
 
         // Start playing idle sound
-        if (idleSound != null)
-            idleSound.Play();
+        if (idleAudioSource != null)
+            idleAudioSource.Play();
     }
 
     void Update()
@@ -139,11 +139,21 @@ public class TankAI : MonoBehaviour
     {
         chaser.speed = patrolSpeed;
 
-        if (idleSound != null && !idleSound.isPlaying)
+        // Stop chase and attack sounds
+        if (chaseAudioSource != null)
+            chaseAudioSource.Stop();
+        if (attackAudioSource != null)
+            attackAudioSource.Stop();
+
+        // Check if patrol sound is not playing and play it
+        if (idleAudioSource != null && !idleAudioSource.isPlaying)
         {
-            idleSound.Play();
+            StartCoroutine(WaitForPatrolAudioCompletion(idleAudioSource));
+            idleAudioSource.Play();
         }
 
+
+        // Check for players within chase range
         foreach (Transform player in players)
         {
             if (player == null)
@@ -153,7 +163,10 @@ public class TankAI : MonoBehaviour
 
             if (distanceToPlayer < chaseRange)
             {
+                // If a player is within chase range, switch to chase state and play chase sound
                 currState = EnemyState.CHASE;
+                if (chaseAudioSource != null && !chaseAudioSource.isPlaying)
+                    chaseAudioSource.Play();
                 return;
             }
         }
@@ -176,6 +189,46 @@ public class TankAI : MonoBehaviour
 
         animator.SetBool("Walking", isRoaming);
     }
+    IEnumerator WaitForPatrolAudioCompletion(AudioSource audioSource)
+    {
+        // Wait until the patrol audio clip finishes playing
+        yield return new WaitForSeconds(audioSource.clip.length);
+
+        // Continue with the rest of the logic after the audio clip finishes playing
+        // For example:
+        foreach (Transform player in players)
+        {
+            if (player == null)
+                continue;
+
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+            if (distanceToPlayer < chaseRange)
+            {
+                currState = EnemyState.CHASE;
+                yield break; // Exit the coroutine if chasing
+            }
+        }
+
+        // Check if it's time to turn or the tank has reached its destination
+        if (Time.time >= nextTurnTime || !chaser.pathPending && chaser.remainingDistance <= chaser.stoppingDistance)
+        {
+            // Set the tank to roam
+            isRoaming = true;
+
+            // Generate a new random destination within NavMesh
+            Vector3 randomDestination = RandomNavSphere(transform.position, patrolRange, -1);
+
+            // Set the new destination
+            chaser.SetDestination(randomDestination);
+
+            // Set the next turn time for a delay (adjust the delay time as needed)
+            nextTurnTime = Time.time + Random.Range(5f, 15f); // Random delay between 5 to 15 seconds
+        }
+
+        animator.SetBool("Walking", isRoaming);
+    }
+
     // Helper function to generate a random destination within NavMesh
     private Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
     {
@@ -214,14 +267,14 @@ public class TankAI : MonoBehaviour
         bool shouldChase = false;
 
         // Stop idle and attack sounds
-        if (idleSound != null)
-            idleSound.Stop();
-        if (attackSound != null)
-            attackSound.Stop();
+        if (idleAudioSource != null)
+            idleAudioSource.Stop();
+        if (attackAudioSource != null)
+            attackAudioSource.Stop();
 
         // Play chase sound
-        if (chaseSound != null && !chaseSound.isPlaying)
-            chaseSound.Play();
+        if (chaseAudioSource != null && !chaseAudioSource.isPlaying)
+            chaseAudioSource.Play();
 
         chaser.speed = chaseSpeed;
 
@@ -327,16 +380,16 @@ public class TankAI : MonoBehaviour
 
     void Attack()
     {
-
         // Stop idle and chase sounds
-        if (idleSound != null)
-            idleSound.Stop();
-        if (chaseSound != null)
-            chaseSound.Stop();
+        if (idleAudioSource != null && idleAudioSource.isPlaying)
+            idleAudioSource.Stop();
+        if (chaseAudioSource != null && chaseAudioSource.isPlaying)
+            chaseAudioSource.Stop();
 
         // Play attack sound
-        if (attackSound != null && !attackSound.isPlaying)
-            attackSound.Play();
+        if (attackAudioSource != null && !attackAudioSource.isPlaying)
+            attackAudioSource.Play();
+
         //health decrease, attack anim here etc
         animator.SetBool("Walking", true);
         animator.SetBool("Attack", true);
@@ -368,6 +421,8 @@ public class TankAI : MonoBehaviour
             }
         }
     }
+
+
 
     bool IsPlayerInFOV(Vector3 targetPosition)
     {

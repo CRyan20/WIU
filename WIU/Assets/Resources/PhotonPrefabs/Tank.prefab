@@ -753,8 +753,8 @@ GameObject:
   - component: {fileID: 2958433226960416662}
   - component: {fileID: -8386569539579808211}
   - component: {fileID: 1419651567}
-  - component: {fileID: 1419651568}
-  - component: {fileID: 1419651569}
+  - component: {fileID: 136442178}
+  - component: {fileID: 136442179}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -876,9 +876,9 @@ MonoBehaviour:
   animator: {fileID: 2958433226960416660}
   fovAngle: 150
   viewDistance: 7
-  idleSound: {fileID: 1419651569}
-  chaseSound: {fileID: 1419651568}
-  attackSound: {fileID: 1419651567}
+  idleAudioSource: {fileID: 1419651567}
+  chaseAudioSource: {fileID: 136442178}
+  attackAudioSource: {fileID: 136442179}
 --- !u!114 &-8386569539579808211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -910,9 +910,9 @@ AudioSource:
   m_GameObject: {fileID: 2724429877533537854}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -232545542836221286, guid: adfa6017278cb6e4a8ab0ceaf545b516,
+  OutputAudioMixerGroup: {fileID: 24300002, guid: adfa6017278cb6e4a8ab0ceaf545b516,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 5fb90d984f51b0f4eb2ec35d467351eb, type: 3}
+  m_audioClip: {fileID: 8300000, guid: e0786228500818048bc57b42195bf4de, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -998,7 +998,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!82 &1419651568
+--- !u!82 &136442178
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1007,7 +1007,7 @@ AudioSource:
   m_GameObject: {fileID: 2724429877533537854}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 6832859390264077591, guid: adfa6017278cb6e4a8ab0ceaf545b516,
+  OutputAudioMixerGroup: {fileID: 24300002, guid: adfa6017278cb6e4a8ab0ceaf545b516,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: e3e04085a7f416f4d88f9b37ba0ba603, type: 3}
   m_PlayOnAwake: 0
@@ -1095,7 +1095,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!82 &1419651569
+--- !u!82 &136442179
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1104,9 +1104,9 @@ AudioSource:
   m_GameObject: {fileID: 2724429877533537854}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 5117337172313199539, guid: adfa6017278cb6e4a8ab0ceaf545b516,
+  OutputAudioMixerGroup: {fileID: 24300002, guid: adfa6017278cb6e4a8ab0ceaf545b516,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: e0786228500818048bc57b42195bf4de, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 5fb90d984f51b0f4eb2ec35d467351eb, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

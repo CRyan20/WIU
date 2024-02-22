@@ -10,6 +10,7 @@ public class MainGameManager : MonoBehaviour
     public GameObject wayPoints;
     public GameObject enemies;
     public GameObject keys;
+    public GameObject doors;
 
     public void Awake()
     {
@@ -92,6 +93,36 @@ public class MainGameManager : MonoBehaviour
             GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Ghoul"), positionArray[i], Quaternion.identity);
 
             obj.transform.parent = enemies.transform;
+        }
+    }
+
+    public void SpawnDoors()
+    {
+        ////Positions taken from the existing ghosts
+        //Vector3[] positionArray = new[] {
+        //    new Vector3(-9.828f, -4.85f, 11.75415f),
+        //    new Vector3(-8.17426f, -4.85f, 11.75415f),
+        //    new Vector3(8.167263f, -4.85f, 11.75415f),
+        //    new Vector3(9.821f, -4.85f, 11.75415f),
+        //};
+
+        ////loop through the array position
+        //for (int i = 0; i < positionArray.Length; ++i)
+        //{
+        //    // Create a Chaser prefab
+        //    GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Door"), positionArray[i], Quaternion.identity);
+
+        //    obj.transform.parent = enemies.transform;
+        //}
+        foreach (SpawnPointsDoor spawnPoint in SpawnDoorManager.Instance.spawnPoints)
+        {
+            //Transform spawnPoint = SpawnDoorManager.Instance.GetSpawnPoints();
+            //GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Door_V1"), spawnPoint.position, spawnPoint.rotation);
+            //obj.transform.parent = doors.transform;
+            Vector3 position = spawnPoint.transform.position;
+            Quaternion rotation = spawnPoint.transform.rotation;
+            GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Door_V1"), position, rotation);
+            obj.transform.parent = doors.transform;
         }
     }
 }

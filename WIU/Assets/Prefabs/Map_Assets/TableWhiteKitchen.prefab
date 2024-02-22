@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2567522291820972962}
   - component: {fileID: 2567522291822070114}
   - component: {fileID: 2567522291817724162}
+  - component: {fileID: 1278320256435791173}
   m_Layer: 0
   m_Name: TableWhiteKitchen
   m_TagString: Untagged
@@ -98,3 +99,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 9f050fd833946d94e8433b7a5c600c24, type: 3}
+--- !u!65 &1278320256435791173
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2567522291819812770}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.376904, y: 0.832534, z: 1.377795}
+  m_Center: {x: -0.00064498186, y: 0.411729, z: 0.0001155138}

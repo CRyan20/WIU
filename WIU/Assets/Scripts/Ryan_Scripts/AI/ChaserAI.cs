@@ -45,6 +45,11 @@ public class ChaserAI : MonoBehaviour
     public float fovAngle = 90f; // Field of view angle
     public float viewDistance = 10f; // Maximum distance the AI can see
 
+    [Header("Audio")]
+    public AudioSource chaseAudioSource;
+    public AudioSource AttackAudioSource;
+    public AudioSource PatrolAudioSource;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -140,7 +145,7 @@ public class ChaserAI : MonoBehaviour
         }
 
         //take damage
-        
+
     }
 
     void Patrol()
@@ -149,7 +154,7 @@ public class ChaserAI : MonoBehaviour
         // Iterate through each player in the players array
         foreach (Transform player in players)
         {
-            if (player == null) 
+            if (player == null)
                 continue;
 
             if (Vector3.Distance(transform.position, player.position) < chaseRange)
@@ -182,8 +187,13 @@ public class ChaserAI : MonoBehaviour
         // Set destination to the current waypoint
         chaser.SetDestination(waypoints[currWaypointIndex].position);
         animator.SetBool("Walking", true);
-    }
 
+        // Play patrol sound if not already playing
+        if (!PatrolAudioSource.isPlaying)
+        {
+            PatrolAudioSource.Play();
+        }
+    }
     void Chase()
     {
         chaser.speed = chaseSpeed;
@@ -198,11 +208,18 @@ public class ChaserAI : MonoBehaviour
                 if (distanceToPlayer > chaser.stoppingDistance)
                 {
                     chaser.SetDestination(player.position);
+                    // Start playing chase audio if not already playing
+                    if (!chaseAudioSource.isPlaying)
+                    {
+                        chaseAudioSource.Play();
+                    }
                 }
                 else
                 {
                     chaser.velocity = Vector3.zero;
                     currState = EnemyState.ATTACK;
+                    // Stop playing chase audio
+                    chaseAudioSource.Stop();
                 }
 
                 if (IsPlayerInFOV(player.position))
@@ -214,12 +231,20 @@ public class ChaserAI : MonoBehaviour
             {
                 //if not in range make it patrol state
                 currState = EnemyState.PATROL;
+                // Stop playing chase audio
+                chaseAudioSource.Stop();
             }
         }
     }
 
     void Attack()
     {
+        // Play attack sound when entering the attack state
+        if (!AttackAudioSource.isPlaying && AttackAudioSource.clip != null)
+        {
+            AttackAudioSource.Play();
+        }
+
         //health decrease, attack anim here etc
         animator.SetBool("Walking", true);
         animator.SetBool("Attack", true);
@@ -235,6 +260,9 @@ public class ChaserAI : MonoBehaviour
             {
                 animator.SetBool("Attack", false);
                 currState = EnemyState.PATROL;
+
+                // Stop playing attack sound when exiting the attack state
+                AttackAudioSource.Stop();
             }
         }
     }

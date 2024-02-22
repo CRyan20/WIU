@@ -3002,11 +3002,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthSprites:
-  - {fileID: -565921144, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
-  - {fileID: -474328953, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
-  - {fileID: 867737559, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
-  - {fileID: 931014087, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: 28249872, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  - {fileID: 931014087, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  - {fileID: 867737559, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  - {fileID: -474328953, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  - {fileID: -565921144, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   healthSystem: {fileID: 7035851674362841492}
 --- !u!1 &7816964928543122472
 GameObject:

@@ -13,9 +13,14 @@ public class HealthBar : MonoBehaviour
     private void Start()
     {
         healthImage = GetComponent<Image>();
+
+        // Get the initial health value
         lastHealth = healthSystem.GetCurrentHealth();
+
+        // Update the health sprite based on the initial health value
         UpdateHealthSprite(lastHealth);
     }
+
 
     // Function to update health sprite based on current health value
     public void UpdateHealthSprite(int currentHealth)
@@ -23,7 +28,7 @@ public class HealthBar : MonoBehaviour
         int maxHealth = healthSystem.maxHealth;
 
         // Calculate the index of the sprite based on the fraction of health
-        int spriteIndex = Mathf.Clamp(Mathf.FloorToInt((float)currentHealth / maxHealth * healthSprites.Length), 0, healthSprites.Length - 1);
+        int spriteIndex = Mathf.Clamp(Mathf.FloorToInt((float)currentHealth / maxHealth * (healthSprites.Length - 1)), 0, healthSprites.Length - 1);
 
         // Set the sprite based on the calculated index
         healthImage.sprite = healthSprites[spriteIndex];
@@ -36,6 +41,7 @@ public class HealthBar : MonoBehaviour
             // Add any additional actions here
         }
     }
+
 
     // Example of updating health sprite with a new health value
     private void Update()

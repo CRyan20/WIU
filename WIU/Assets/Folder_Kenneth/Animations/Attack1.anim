@@ -49191,6 +49191,22 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0.75
+    functionName: DealDamageToPlayer
+    data: 
+    objectReferenceParameter: {fileID: 11500000, guid: 3c84ed545b4db804e8ddf8e064cd6f06,
+      type: 3}
+    floatParameter: 0
+    intParameter: 10
+    messageOptions: 0
+  - time: 1.0833334
+    functionName: DealDamageToPlayer
+    data: 
+    objectReferenceParameter: {fileID: 11500000, guid: 3c84ed545b4db804e8ddf8e064cd6f06,
+      type: 3}
+    floatParameter: 0
+    intParameter: 10
+    messageOptions: 0
   - time: 1.6666666
     functionName: ResetAttackAfterAnimation
     data: 

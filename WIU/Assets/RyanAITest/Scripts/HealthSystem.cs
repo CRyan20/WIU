@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-    public int maxHealth = 20;
+    public int maxHealth;
     public int currentHealth;
     //public AudioSource hit;
 
@@ -22,21 +22,19 @@ public class HealthSystem : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        Debug.Log(currentHealth);
     }
 
     public void TakeDamage(int amount)
     {
         //hit.Play();
         currentHealth -= amount;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        SetCurrenHealth(currentHealth);
     }
 
-    void Die()
+    public int SetCurrenHealth(int amount)
     {
-        // Perform any necessary actions before destroying the game object, such as playing death animations, spawning effects, etc.
-        Destroy(gameObject);
+        currentHealth = amount;
+        return currentHealth;
     }
 }

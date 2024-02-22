@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class rbMovement : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class rbMovement : MonoBehaviour
     bool isSprinting = false;
     float standingHeight;
 
+    public TextMeshProUGUI doorText;
+    public DoorInteraction doorInteraction;
+
     public AudioSource Sprint;
     public AudioSource Walk;
     public AudioSource Jump;
@@ -30,6 +34,8 @@ public class rbMovement : MonoBehaviour
     private InventoryManager inventoryManager;
 
     private PhotonView photonView;
+
+    public HealthSystem healthSystem;
 
     void Awake()
     {
@@ -42,11 +48,13 @@ public class rbMovement : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         inventoryManager = GetComponent<InventoryManager>();
         standingHeight = transform.localScale.y; // Store the standing height
+        healthSystem = GetComponent<HealthSystem>();
 
         if (!photonView.IsMine)
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
         }
+        doorInteraction = GetComponentInChildren<DoorInteraction>();
     }
 
     void Update()
@@ -54,6 +62,11 @@ public class rbMovement : MonoBehaviour
         if (!photonView.IsMine)
         {
             return;
+        }
+
+        if (healthSystem.currentHealth <= 0)
+        {
+            healthSystem.currentHealth = 0;
         }
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -166,6 +179,45 @@ public class rbMovement : MonoBehaviour
             //}
 
             rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Door"))
+        {
+            DoorInteraction doorInteraction = other.GetComponentInChildren<DoorInteraction>();
+            if (doorInteraction != null)
+            {
+                doorInteraction.isPlayerNearby = true;
+                if (!doorInteraction.isDoorOpened)
+                {
+                    Debug.Log("Press 'F' to open the door.");
+                    doorText.gameObject.SetActive(true);
+                    doorText.text = "Press 'F' to Open";
+                }
+                else
+                {
+                    Debug.Log("Press 'F' to close the door.");
+                    doorText.gameObject.SetActive(true);
+                    doorText.text = "Press 'F' to Close";
+                    // You may want to hide the text if the door is already open.
+                    // doorText.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Door"))
+        {
+            DoorInteraction doorInteraction = other.GetComponentInChildren<DoorInteraction>();
+            if (doorInteraction != null)
+            {
+                doorInteraction.isPlayerNearby = false;
+                doorText.gameObject.SetActive(false); // Hide the text when the player moves away from the door
+            }
         }
     }
 }

@@ -8,6 +8,16 @@ public class HealthSystem : MonoBehaviour
     public int currentHealth;
     //public AudioSource hit;
 
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +32,6 @@ public class HealthSystem : MonoBehaviour
         {
             Die();
         }
-
     }
 
     void Die()
@@ -31,4 +40,3 @@ public class HealthSystem : MonoBehaviour
         Destroy(gameObject);
     }
 }
-

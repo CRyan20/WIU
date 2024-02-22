@@ -78,6 +78,26 @@ public class scr_MinionAi : MonoBehaviour
 
         isDead = false;
         healthSystem = GetComponent<HealthSystem>();
+
+        // Delayed initialization after a short delay (adjust delay time as needed)
+        StartCoroutine(DelayedInitialization(10.0f));
+    }
+
+    IEnumerator DelayedInitialization(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+        players = new Transform[playerObjects.Length];
+        for (int i = 0; i < playerObjects.Length; i++)
+        {
+            players[i] = playerObjects[i].transform;
+        }
+
+        if (players == null || players.Length == 0)
+        {
+            Debug.LogError("Player not found");
+        }
     }
 
     private void Update()

@@ -29,10 +29,10 @@ public class HealthSystem : MonoBehaviour
     {
         //hit.Play();
         currentHealth -= amount;
-        SetCurrenHealth(currentHealth);
+        SetCurrentHealth(currentHealth); // Corrected method name
     }
 
-    public int SetCurrenHealth(int amount)
+    public int SetCurrentHealth(int amount)
     {
         currentHealth = amount;
         return currentHealth;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class DoorInteraction : MonoBehaviour
 {
@@ -6,8 +7,9 @@ public class DoorInteraction : MonoBehaviour
     public KeyCode interactKey = KeyCode.F; // Key to trigger interaction
     public GameObject doorObject; // Reference to the door GameObject
 
-    private bool isPlayerNearby = false;
-    private bool isDoorOpened = false;
+
+    public bool isPlayerNearby = false;
+    public bool isDoorOpened = false;
 
     void Update()
     {
@@ -40,7 +42,7 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    void OpenDoor()
+    public void OpenDoor()
     {
         // Example: Rotate the door object around its Y-axis to simulate opening
         doorObject.transform.Rotate(Vector3.up, 89f);
@@ -48,7 +50,7 @@ public class DoorInteraction : MonoBehaviour
         Debug.Log("The door is now open!");
     }
 
-    void CloseDoor()
+    public void CloseDoor()
     {
         // Example: Rotate the door object around its Y-axis to simulate closing
         doorObject.transform.Rotate(Vector3.up, -89f);

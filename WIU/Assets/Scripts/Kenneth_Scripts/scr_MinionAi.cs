@@ -1,6 +1,7 @@
 using UnityEngine.AI;
 using UnityEngine;
 using System.Collections;
+using Photon.Pun;
 
 public class scr_MinionAi : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class scr_MinionAi : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    private PhotonView photonView;
+
     // States
     private enum MinionState
     {
@@ -56,6 +59,7 @@ public class scr_MinionAi : MonoBehaviour
         //target = GameObject.FindGameObjectWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        photonView = GetComponent<PhotonView>();
     }
 
     private void Start()

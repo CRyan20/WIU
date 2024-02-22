@@ -40,8 +40,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 MainGameManager.Instance.SpawnChaser();
-
                 MainGameManager.Instance.SpawnKey();
+                MainGameManager.Instance.SpawnMinion();
+                MainGameManager.Instance.SpawnTank();
             }
         }
     }

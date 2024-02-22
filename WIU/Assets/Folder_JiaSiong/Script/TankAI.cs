@@ -48,6 +48,11 @@ public class TankAI : MonoBehaviour
     public float fovAngle = 150f;
     public float viewDistance = 7f;
 
+    [Header("Audio")]
+    public AudioSource idleSound;
+    public AudioSource chaseSound;
+    public AudioSource attackSound;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -81,6 +86,10 @@ public class TankAI : MonoBehaviour
         currState = EnemyState.PATROL;
 
         StartCoroutine(DelayedInitialization(1.0f));
+
+        // Start playing idle sound
+        if (idleSound != null)
+            idleSound.Play();
     }
 
     void Update()
@@ -129,6 +138,11 @@ public class TankAI : MonoBehaviour
     void Patrol()
     {
         chaser.speed = patrolSpeed;
+
+        if (idleSound != null && !idleSound.isPlaying)
+        {
+            idleSound.Play();
+        }
 
         foreach (Transform player in players)
         {
@@ -194,9 +208,23 @@ public class TankAI : MonoBehaviour
 
     void Chase()
     {
+
         chaser.speed = Mathf.Lerp(chaser.speed, chaseSpeed, Time.deltaTime);
 
         bool shouldChase = false;
+
+        // Stop idle and attack sounds
+        if (idleSound != null)
+            idleSound.Stop();
+        if (attackSound != null)
+            attackSound.Stop();
+
+        // Play chase sound
+        if (chaseSound != null && !chaseSound.isPlaying)
+            chaseSound.Play();
+
+        chaser.speed = chaseSpeed;
+
 
         foreach (Transform player in players)
         {
@@ -299,6 +327,20 @@ public class TankAI : MonoBehaviour
 
     void Attack()
     {
+
+        // Stop idle and chase sounds
+        if (idleSound != null)
+            idleSound.Stop();
+        if (chaseSound != null)
+            chaseSound.Stop();
+
+        // Play attack sound
+        if (attackSound != null && !attackSound.isPlaying)
+            attackSound.Play();
+        //health decrease, attack anim here etc
+        animator.SetBool("Walking", true);
+        animator.SetBool("Attack", true);
+
         foreach (Transform player in players)
         {
             if (player == null)

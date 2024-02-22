@@ -4,14 +4,16 @@ using UnityEngine;
 using Photon.Pun;
 using Unity.VisualScripting;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : MonoBehaviourPunCallbacks
 {
+    public static PauseMenu Instance;
+
     public GameObject pauseMenuUI;
-    private PhotonView photonView;
+    public bool isPaused = false;
 
     void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        Instance = this;    
     }
 
     void Start()
@@ -26,19 +28,21 @@ public class PauseMenu : MonoBehaviour
         {
             return;
         }
-        if (photonView.IsMine)
+        // Check for the "Escape" key to toggle the pause menu
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Check for the "Escape" key to toggle the pause menu
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                TogglePauseMenu();
-            }
+            
+            TogglePauseMenu();
         }
     }
 
     void TogglePauseMenu()
     {
-        // Toggle the visibility of the pause menu
-        pauseMenuUI.SetActive(!pauseMenuUI.activeSelf);
+        isPaused = !isPaused;
+        pauseMenuUI.SetActive(isPaused);
+        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isPaused;
+        // Notify other scripts about the pause state
+        SendMessage("OnPause", isPaused, SendMessageOptions.DontRequireReceiver);
     }
 }

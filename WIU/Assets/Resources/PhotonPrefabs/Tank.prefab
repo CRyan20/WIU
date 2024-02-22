@@ -873,6 +873,9 @@ MonoBehaviour:
   animator: {fileID: 2958433226960416660}
   fovAngle: 150
   viewDistance: 7
+  idleSound: {fileID: 0}
+  chaseSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!114 &-8386569539579808211
 MonoBehaviour:
   m_ObjectHideFlags: 0

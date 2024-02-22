@@ -85,7 +85,7 @@ public class TankAI : MonoBehaviour
         //start state is patrol
         currState = EnemyState.PATROL;
 
-        StartCoroutine(DelayedInitialization(1.0f));
+        StartCoroutine(DelayedInitialization(10.0f));
 
         // Start playing idle sound
         if (idleSound != null)

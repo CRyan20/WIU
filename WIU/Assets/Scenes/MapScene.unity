@@ -819,7 +819,7 @@ PrefabInstance:
     - target: {fileID: 1675818391209338144, guid: a232ed888986db14b8563e9710c8e1a3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.62
+      value: -12.581
       objectReference: {fileID: 0}
     - target: {fileID: 1675818391209338144, guid: a232ed888986db14b8563e9710c8e1a3,
         type: 3}
@@ -3622,88 +3622,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 268344270}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &276790098
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1807223775}
-    m_Modifications:
-    - target: {fileID: 1000013073752430, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_Name
-      value: TreasureChest_01(2048)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_RootOrder
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -11.109264
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.96
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 45.108074
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9a3eaaf9335b479419077f71b0b9ca11, type: 3}
---- !u!4 &276790099 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4000011223056676, guid: 9a3eaaf9335b479419077f71b0b9ca11,
-    type: 3}
-  m_PrefabInstance: {fileID: 276790098}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &276790100 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1000013073752430, guid: 9a3eaaf9335b479419077f71b0b9ca11,
-    type: 3}
-  m_PrefabInstance: {fileID: 276790098}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &276790101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 276790100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a0cf3fef10c65e4db86be113ef4f67f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keys: []
 --- !u!1001 &278019378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25409,7 +25327,6 @@ Transform:
   - {fileID: 554002257}
   - {fileID: 877026040}
   - {fileID: 1500321142}
-  - {fileID: 276790099}
   m_Father: {fileID: 1071747036}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

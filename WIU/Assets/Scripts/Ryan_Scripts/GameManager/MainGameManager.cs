@@ -37,10 +37,10 @@ public class MainGameManager : MonoBehaviour
     public void SpawnKey()
     {
         Vector3[] positionArray = new[] {
-            new Vector3(-26.433f, -8.326f, -7.981f),
-            new Vector3(-22.89787f, -4.322f, -38.88957f),
-            new Vector3(0.09983337f, -4.404f, 45.76365f),
-            new Vector3(-0.5269532f, -0.607f, -44.68964f),
+            new Vector3(-26.6f, -8.7f, -9.2f),
+            new Vector3(-23.3f, -4.5f, -39.2f),
+            new Vector3(1.2f, -3.5f, 49.1f),
+            new Vector3(3f, -1.05f, -42.2f),
         };
 
         //loop through the array position

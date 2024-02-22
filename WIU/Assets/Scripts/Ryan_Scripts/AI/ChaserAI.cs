@@ -137,10 +137,7 @@ public class ChaserAI : MonoBehaviour
         {
             healthSystem.currentHealth = 0;
             currState = EnemyState.DEAD;
-        }
-
-        //take damage
-        
+        }        
     }
 
     void Patrol()

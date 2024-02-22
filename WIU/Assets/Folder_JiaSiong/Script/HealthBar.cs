@@ -7,15 +7,16 @@ public class HealthBar : MonoBehaviour
 {
     public Sprite[] healthSprites; // Array containing health sprites
     private Image healthImage;
-    public HealthSystem healthSystem;
+    public EnemyAttack healthSystem;
     private int lastHealth;
 
     private void Start()
     {
+
         healthImage = GetComponent<Image>();
 
         // Get the initial health value
-        lastHealth = healthSystem.GetCurrentHealth();
+        lastHealth = healthSystem.playerHealth.currentHealth;
 
         // Update the health sprite based on the initial health value
         UpdateHealthSprite(lastHealth);
@@ -25,7 +26,7 @@ public class HealthBar : MonoBehaviour
     // Function to update health sprite based on current health value
     public void UpdateHealthSprite(int currentHealth)
     {
-        int maxHealth = healthSystem.maxHealth;
+        int maxHealth = healthSystem.playerHealth.maxHealth;
 
         // Calculate the index of the sprite based on the fraction of health
         int spriteIndex = Mathf.Clamp(Mathf.FloorToInt((float)currentHealth / maxHealth * (healthSprites.Length - 1)), 0, healthSprites.Length - 1);
@@ -46,8 +47,8 @@ public class HealthBar : MonoBehaviour
     // Example of updating health sprite with a new health value
     private void Update()
     {
-        int maxHealth = healthSystem.maxHealth;
         // For demonstration purposes, decrease health over time
-        UpdateHealthSprite(healthSystem.GetCurrentHealth());
+        UpdateHealthSprite(lastHealth);
+        Debug.Log("test" + lastHealth);
     }
 }

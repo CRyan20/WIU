@@ -2015,7 +2015,6 @@ GameObject:
   - component: {fileID: 7816964928603785553}
   - component: {fileID: 4989540264626550404}
   - component: {fileID: 7816964929179204800}
-  - component: {fileID: 5846922897365283486}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -2182,24 +2181,6 @@ MonoBehaviour:
   - {fileID: 7816964928982116567}
   pickupbool: 0
   pickupText: {fileID: 7816964927701708794}
-  doorOpenText: {fileID: 0}
---- !u!114 &5846922897365283486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7816964929179204814}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8934a0310971ff040908872c430661f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionDistance: 3
-  interactKey: 102
-  doorObject: {fileID: 6505095934918748781, guid: e917c7f245b666140ba9426225102755,
-    type: 3}
-  openDoorText: {fileID: 3354651857247908142}
 --- !u!1 &7816964929343527942
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using Unity.VisualScripting;
 
 public class rbMovement : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class rbMovement : MonoBehaviour
     public float sprintSpeed = 6f;
     public float gravity = -9.81f;
     public float jumpHeight = 100f;
-
+    public float sprintDepletionRate = 1f;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -39,7 +40,8 @@ public class rbMovement : MonoBehaviour
 
     public HealthSystem healthSystem;
 
-    public float sprintDepletionRate = 1f;
+    public GameObject GameOverScreen;
+
 
     void Awake()
     {
@@ -53,6 +55,7 @@ public class rbMovement : MonoBehaviour
         inventoryManager = GetComponent<InventoryManager>();
         standingHeight = transform.localScale.y; // Store the standing height
         healthSystem = GetComponent<HealthSystem>();
+        GameOverScreen.SetActive(false);
         staminaBar = GetComponentInChildren<StaminaBar>();
         if (!photonView.IsMine)
         {
@@ -79,7 +82,8 @@ public class rbMovement : MonoBehaviour
         if (healthSystem.currentHealth <= 0)
         {
             healthSystem.currentHealth = 0;
-            //display Gameover canvas.
+            GameOverScreen.SetActive(true);
+
         }
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -136,10 +140,10 @@ public class rbMovement : MonoBehaviour
                 animator.SetBool("isSprinting", true);
                 animator.SetBool("isMoving", true);
                 Debug.Log(staminaBar.currentStamina);
+                staminaBar.DecreaseStamina(staminaBar.depletionSpeed * Time.deltaTime);
                 if (!Sprint.isPlaying)
                 {
                     Sprint.Play();
-                    staminaBar.DecreaseStamina(staminaBar.depletionSpeed * Time.deltaTime);
                     Debug.Log(staminaBar.currentStamina);
                 }
             }

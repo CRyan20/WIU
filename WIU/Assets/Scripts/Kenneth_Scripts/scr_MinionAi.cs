@@ -39,6 +39,12 @@ public class scr_MinionAi : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    [Header("Audio")]
+    public AudioSource attackAudioSource;
+    public AudioSource chaseAudioSource;
+    public AudioSource idleAudioSource;
+    public AudioSource deathAudioSource;
+
     private PhotonView photonView;
 
     // States
@@ -81,6 +87,10 @@ public class scr_MinionAi : MonoBehaviour
 
         // Delayed initialization after a short delay (adjust delay time as needed)
         StartCoroutine(DelayedInitialization(10.0f));
+
+      
+
+
     }
 
     IEnumerator DelayedInitialization(float delay)
@@ -174,6 +184,12 @@ public class scr_MinionAi : MonoBehaviour
 
     private void Idle()
     {
+        //// Stop other audio sources
+        //StopAllAudioExcept(idleAudioSource);
+
+        // Play idle sound
+        idleAudioSource.Play();
+
         animator.SetBool("isPatrolling", false);
 
         idleTimer += Time.deltaTime;
@@ -185,7 +201,13 @@ public class scr_MinionAi : MonoBehaviour
     }
 
     private void Patroling()
+
     {
+        if (idleAudioSource != null && !idleAudioSource.isPlaying)
+        {
+            idleAudioSource.Play();
+        }
+
         animator.SetBool("isPatrolling", true);
         animator.SetBool("isChasing", false);
         
@@ -218,6 +240,15 @@ public class scr_MinionAi : MonoBehaviour
 
     private void ChasePlayer()
     {
+        // Stop idle and attack sounds
+        if (idleAudioSource != null)
+            idleAudioSource.Stop();
+        if (attackAudioSource != null)
+            attackAudioSource.Stop();
+
+        // Play chase sound
+        if (chaseAudioSource != null && !chaseAudioSource.isPlaying)
+            chaseAudioSource.Play();
 
         foreach (Transform player in players)
         {
@@ -229,7 +260,16 @@ public class scr_MinionAi : MonoBehaviour
     }
 
     private void AttackPlayer()
-    {
+    { // Stop idle and chase sounds
+        if (idleAudioSource != null)
+            idleAudioSource.Stop();
+        if (chaseAudioSource != null)
+            chaseAudioSource.Stop();
+
+        // Play attack sound
+        if (attackAudioSource != null && !attackAudioSource.isPlaying)
+            attackAudioSource.Play();
+
         // Make sure enemy does not move
         agent.SetDestination(transform.position);
 
@@ -252,6 +292,18 @@ public class scr_MinionAi : MonoBehaviour
             animator.SetBool("isAttacking", true);
             StartCoroutine(ResetAttackAfterAnimation());
         }
+    }
+
+    private void StopAllAudioExcept(AudioSource exceptSource)
+    {
+        if (exceptSource != attackAudioSource)
+            attackAudioSource.Stop();
+        if (exceptSource != chaseAudioSource)
+            chaseAudioSource.Stop();
+        if (exceptSource != idleAudioSource)
+            idleAudioSource.Stop();
+        if (exceptSource != deathAudioSource)
+            deathAudioSource.Stop();
     }
 
     private IEnumerator ResetAttackAfterAnimation()
@@ -280,6 +332,12 @@ public class scr_MinionAi : MonoBehaviour
 
     private void Death()
     {
+        //// Stop other audio sources
+        //StopAllAudioExcept(deathAudioSource);
+
+        // Play death sound
+        deathAudioSource.Play();
+
         isDead = true;
         agent.velocity = Vector3.zero;  
         StartCoroutine(DestroyEnemy());

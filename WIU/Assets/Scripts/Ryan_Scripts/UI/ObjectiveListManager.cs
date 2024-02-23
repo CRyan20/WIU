@@ -21,21 +21,9 @@ public class ObjectiveListManager : MonoBehaviour
     void InitializeObjectives()
     {
         // Populate tasks here, you can load from a data file, for simplicity let's add them manually
-        objectives.Add(new Objectives("Find a Gun"));
-        objectives.Add(new Objectives("Find a Light"));
-    }
-
-    void MainFloorObjectives()
-    {
-        objectives.Clear();
-        objectives.Add(new Objectives("Find Puzzle Room"));
-        //objectives.Add(new Objectives("Totems Collected: " + ));
-    }
-
-    void SecondFloorObjectives()
-    {
-        objectives.Clear();
-
+        objectives.Add(new Objectives("Collect All Keys"));
+        objectives.Add(new Objectives("Obtain Masterkey"));
+        objectives.Add(new Objectives("Escape the Manor"));
     }
 
     void UpdateObjectivesListUI()

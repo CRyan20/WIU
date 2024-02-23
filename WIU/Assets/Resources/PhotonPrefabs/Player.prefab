@@ -3276,7 +3276,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 5.3345947, z: 0, w: -107.17886}
+  m_margin: {x: -125.94827, y: 5.3345947, z: 0, w: -209.88196}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3300,7 +3300,7 @@ MonoBehaviour:
     m_Top: 31
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -210
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -3925,6 +3925,7 @@ MonoBehaviour:
   - {fileID: 7816964928982116567}
   pickupbool: 0
   pickupText: {fileID: 7816964927701708794}
+  doorObject: {fileID: 0}
 --- !u!82 &430876984210731086
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4322,7 +4323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  currentHealth: 100
+  currentHealth: 30
 --- !u!114 &2812149283389906705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4537,7 +4538,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7816964929661407806}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0001220703}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4546,7 +4547,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 847.99963, y: 539}
+  m_AnchoredPosition: {x: 776, y: 539}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7816964929661407801

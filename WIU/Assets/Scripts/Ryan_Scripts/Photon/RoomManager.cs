@@ -43,6 +43,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
                 MainGameManager.Instance.SpawnKey();
                 MainGameManager.Instance.SpawnMinion();
                 MainGameManager.Instance.SpawnTank();
+                MainGameManager.Instance.SpawnDoors();
             }
         }
     }

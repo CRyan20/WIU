@@ -1,7 +1,8 @@
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
 
-public class DoorInteraction : MonoBehaviour
+public class DoorInteraction : MonoBehaviourPunCallbacks
 {
     public float interactionDistance = 3f; // Distance to trigger interaction
     public KeyCode interactKey = KeyCode.F; // Key to trigger interaction
@@ -16,9 +17,11 @@ public class DoorInteraction : MonoBehaviour
         if (isPlayerNearby && Input.GetKeyDown(interactKey))
         {
             if (!isDoorOpened)
-                OpenDoor();
+                //OpenDoor();
+                photonView.RPC("OpenDoor", RpcTarget.All);
             else
-                CloseDoor();
+                //CloseDoor();
+                photonView.RPC("CloseDoor", RpcTarget.All);
         }
     }
 
@@ -42,6 +45,7 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
+    [PunRPC]
     public void OpenDoor()
     {
         // Example: Rotate the door object around its Y-axis to simulate opening
@@ -50,6 +54,7 @@ public class DoorInteraction : MonoBehaviour
         Debug.Log("The door is now open!");
     }
 
+    [PunRPC]
     public void CloseDoor()
     {
         // Example: Rotate the door object around its Y-axis to simulate closing

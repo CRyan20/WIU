@@ -20,9 +20,16 @@ public class EndDoor : MonoBehaviour
 
     public TextMeshProUGUI pickupText; // Reference to TextMeshProUGUI
 
+    public GameObject GameWinScreen;
+
     void Awake()
     {
         Instance = this;
+    }
+
+    void Start()
+    {
+        GameWinScreen.SetActive(false);
     }
 
     // Update is called once per frame
@@ -69,11 +76,7 @@ public class EndDoor : MonoBehaviour
 
     public void EndGame()
     {
-        // Perform actions to end the game, such as displaying a victory screen, stopping gameplay, etc.
-        Debug.Log("Game ended! You have collected all required keys and interacted with the door.");
-
-        // Example: Disconnect from the Photon network
-        PhotonNetwork.Disconnect();
+        GameWinScreen.SetActive(true);
     }
 
     void ShowPickupText(string text, float displayTime = 2f)

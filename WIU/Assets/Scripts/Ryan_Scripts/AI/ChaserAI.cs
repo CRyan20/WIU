@@ -45,6 +45,12 @@ public class ChaserAI : MonoBehaviour
     public float fovAngle = 90f; // Field of view angle
     public float viewDistance = 10f; // Maximum distance the AI can see
 
+    [Header("Audio")]
+    public AudioSource patrolAudio;
+    public AudioSource chaseAudio;
+    public AudioSource attackAudio;
+    public AudioSource deathAudio;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -142,6 +148,11 @@ public class ChaserAI : MonoBehaviour
 
     void Patrol()
     {
+
+        if (patrolAudio!= null && !patrolAudio.isPlaying)
+        {
+            patrolAudio.Play();
+        }
         chaser.speed = patrolSpeed;
         // Iterate through each player in the players array
         foreach (Transform player in players)
@@ -183,6 +194,16 @@ public class ChaserAI : MonoBehaviour
 
     void Chase()
     {
+        // Stop idle and attack sounds
+        if (patrolAudio != null)
+            patrolAudio.Stop();
+        if (attackAudio != null)
+            attackAudio.Stop();
+
+        // Play chase sound
+        if (chaseAudio != null && !chaseAudio.isPlaying)
+            chaseAudio.Play();
+        
         chaser.speed = chaseSpeed;
         foreach (Transform player in players)
         {
@@ -217,6 +238,16 @@ public class ChaserAI : MonoBehaviour
 
     void Attack()
     {
+        // Stop idle and chase sounds
+        if (patrolAudio != null)
+            patrolAudio.Stop();
+        if (chaseAudio != null)
+            chaseAudio.Stop();
+
+        // Play attack sound
+        if (attackAudio != null && !attackAudio.isPlaying)
+            attackAudio.Play();
+
         //health decrease, attack anim here etc
         animator.SetBool("Walking", true);
         animator.SetBool("Attack", true);
@@ -238,6 +269,19 @@ public class ChaserAI : MonoBehaviour
 
     void Dead()
     {
+        // Stop idle and chase sounds
+        if (patrolAudio != null)
+            patrolAudio.Stop();
+        if (chaseAudio != null)
+            chaseAudio.Stop();
+        if (attackAudio != null)
+            attackAudio.Stop();
+
+
+        if (deathAudio != null && !deathAudio.isPlaying)
+            deathAudio.Play();
+
+
         chaser.velocity = Vector3.zero;
         StartCoroutine(DestroyAfterDeathAnimation());
     }

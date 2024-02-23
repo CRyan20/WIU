@@ -180,16 +180,16 @@ public class InventoryManager : MonoBehaviour
                 // Clear the reference in the array
                 invItemPrefabs[selectedSlotIndex] = null;
 
-                Debug.Log(invItemPrefab);
 
                 // Destroy the instantiated inventory item prefab for the selected slot
                 Destroy(inventorySlots[selectedSlotIndex].GetComponentsInChildren<MonoBehaviour>()[2].gameObject);
+                //Destroy(itemInSlot.gameObject);
 
                 // Update UI and provide feedback
                 ShowPickupText("Used a key. Keys remaining: " + (endDoor.keysRequired - endDoor.keysCollected));
 
                 // Check if enough keys have been collected to open the door
-                if (endDoor.keysCollected >= endDoor.keysRequired)
+                if (endDoor.keysCollected == 4)
                 {
                     // Open the door
                     endDoor.isDoorOpened = true;

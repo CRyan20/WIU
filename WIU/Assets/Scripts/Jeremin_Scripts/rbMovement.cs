@@ -35,6 +35,8 @@ public class rbMovement : MonoBehaviour
 
     private PhotonView photonView;
 
+    public HealthSystem healthSystem;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -46,6 +48,7 @@ public class rbMovement : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         inventoryManager = GetComponent<InventoryManager>();
         standingHeight = transform.localScale.y; // Store the standing height
+        healthSystem = GetComponent<HealthSystem>();
 
         if (!photonView.IsMine)
         {
@@ -59,6 +62,11 @@ public class rbMovement : MonoBehaviour
         if (!photonView.IsMine)
         {
             return;
+        }
+
+        if (healthSystem.currentHealth <= 0)
+        {
+            healthSystem.currentHealth = 0;
         }
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 public class EndDoor : MonoBehaviour
 {
@@ -47,7 +48,7 @@ public class EndDoor : MonoBehaviour
                 ShowPickupText("The door requires " + (keysRequired - keysCollected) + " more keys to open.");
                 Debug.Log("The door requires " + (keysRequired - keysCollected) + " more keys to open.");
             }
-        }
+        }  
     }
 
     void OnTriggerEnter(Collider other)
@@ -76,7 +77,8 @@ public class EndDoor : MonoBehaviour
 
     public void EndGame()
     {
-        GameWinScreen.SetActive(true);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex + 1);
     }
 
     void ShowPickupText(string text, float displayTime = 2f)

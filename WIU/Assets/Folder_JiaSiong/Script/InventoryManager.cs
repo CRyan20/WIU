@@ -25,6 +25,9 @@ public class InventoryManager : MonoBehaviour
     private PickableItem pickableItem;
     private GameObject nearestItem;
 
+    public GameObject doorObject;
+    private EndDoor endDoor;
+
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -37,6 +40,22 @@ public class InventoryManager : MonoBehaviour
         if (!photonView.IsMine)
         {
             inventoryCanvas.SetActive(false);
+        }
+
+        doorObject = GameObject.FindGameObjectWithTag("Exit");
+        if (doorObject != null)
+        {
+            // Get the EndDoor component from the door GameObject
+            endDoor = doorObject.GetComponent<EndDoor>();
+
+            if (endDoor == null)
+            {
+                Debug.LogError("EndDoor component not found on the door GameObject.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Door GameObject not found in the scene.");
         }
     }
     void Update()
@@ -60,6 +79,10 @@ public class InventoryManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.G))
         {
             TryDropItem();
+        }
+        else if (Input.GetKeyDown(KeyCode.I))
+        {
+            TryUseKey();
         }
         pickupbool = false;
     }
@@ -136,7 +159,58 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    public void TryUseKey()
+    {
+        // Check if the player has any keys in the inventory
+        if (inventoryItems.ContainsKey(selectedSlotIndex))
+        {
+            // Check if the item in the selected slot is a key
+            PickableItem itemInSlot = inventoryItems[selectedSlotIndex];
+            if (itemInSlot.itemData.itemType == ItemType.Key)
+            {
+                // Increment the keys collected
+                endDoor.keysCollected++;
 
+                // Remove the used key from the inventory
+                inventoryItems.Remove(selectedSlotIndex);
+
+                // Destroy the instantiated inventory item prefab for the selected slot
+                Destroy(invItemPrefabs[selectedSlotIndex]);
+
+                // Clear the reference in the array
+                invItemPrefabs[selectedSlotIndex] = null;
+
+                Debug.Log(invItemPrefab);
+
+                // Destroy the instantiated inventory item prefab for the selected slot
+                Destroy(inventorySlots[selectedSlotIndex].GetComponentsInChildren<MonoBehaviour>()[2].gameObject);
+
+                // Update UI and provide feedback
+                ShowPickupText("Used a key. Keys remaining: " + (endDoor.keysRequired - endDoor.keysCollected));
+
+                // Check if enough keys have been collected to open the door
+                if (endDoor.keysCollected >= endDoor.keysRequired)
+                {
+                    // Open the door
+                    endDoor.isDoorOpened = true;
+                    // Perform any additional actions related to door opening
+
+                    // End the game
+                    EndDoor.Instance.EndGame();
+                }
+            }
+            else
+            {
+                // The item in the selected slot is not a key
+                ShowPickupText("Selected item is not a key.");
+            }
+        }
+        else
+        {
+            // The player doesn't have any keys in the inventory
+            ShowPickupText("No keys in inventory.");
+        }
+    }
 
 
     public void TryDropItem()

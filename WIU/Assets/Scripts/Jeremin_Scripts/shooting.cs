@@ -8,7 +8,7 @@ public class shooting : MonoBehaviour
     public Camera playerCamera; // Reference to the player's camera
     public GameObject Fire;
     public GameObject HitPoint;
-    //public AudioSource Firing;
+    public AudioSource Firing;
     private bool canShoot = true; // Initialize to true to allow shooting at the start
 
     void Update()
@@ -24,9 +24,6 @@ public class shooting : MonoBehaviour
 
     void Shoot()
     {
-        //Firing.Play();
-
-        AudioManager.instance.PlaySound("Firing");
 
         // Create a ray from the camera's position forward
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
@@ -49,6 +46,10 @@ public class shooting : MonoBehaviour
 
             Destroy(a, 1);
             Destroy(b, 1);
+
+            Firing.Play();
+
+            AudioManager.instance.PlaySound("Firing");
         }
     }
 

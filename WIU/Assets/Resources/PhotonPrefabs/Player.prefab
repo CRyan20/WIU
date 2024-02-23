@@ -3853,7 +3853,8 @@ MonoBehaviour:
   Sprint: {fileID: 430876984210731086}
   Walk: {fileID: 2970912960685870113}
   Jump: {fileID: 838453677688693345}
-  healthSystem: {fileID: 0}
+  healthSystem: {fileID: 7035851674362841492}
+  sprintDepletionRate: 5
 --- !u!136 &7816964929179204807
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4430,6 +4431,8 @@ MonoBehaviour:
   - {fileID: -58681666, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: 743800208, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: -1370348494, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  maxStamina: 100
+  currentStamina: 0
   depletionSpeed: 19
   refillSpeed: 18
 --- !u!1 &7816964929627036139

@@ -3145,7 +3145,6 @@ MonoBehaviour:
   - {fileID: 867737559, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: -474328953, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: -565921144, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
-  healthSystem: {fileID: 2812149283389906705}
 --- !u!1 &7816964928543122472
 GameObject:
   m_ObjectHideFlags: 0
@@ -3854,7 +3853,8 @@ MonoBehaviour:
   Sprint: {fileID: 430876984210731086}
   Walk: {fileID: 2970912960685870113}
   Jump: {fileID: 838453677688693345}
-  healthSystem: {fileID: 0}
+  healthSystem: {fileID: 7035851674362841492}
+  sprintDepletionRate: 5
 --- !u!136 &7816964929179204807
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4336,7 +4336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c84ed545b4db804e8ddf8e064cd6f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealth: {fileID: 7035851674362841492}
+  playerPrefab: {fileID: 7816964929179204814}
 --- !u!1 &7816964929343527942
 GameObject:
   m_ObjectHideFlags: 0
@@ -4432,6 +4432,8 @@ MonoBehaviour:
   - {fileID: -58681666, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: 743800208, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
   - {fileID: -1370348494, guid: 6da4c45756d5b5e4498f5b31d9ed5815, type: 3}
+  maxStamina: 100
+  currentStamina: 0
   depletionSpeed: 19
   refillSpeed: 18
 --- !u!1 &7816964929627036139

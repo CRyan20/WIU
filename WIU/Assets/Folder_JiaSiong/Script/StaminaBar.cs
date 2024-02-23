@@ -5,8 +5,8 @@ public class StaminaBar : MonoBehaviour
 {
     public Sprite[] staminaSprites; // Array containing stamina sprites
     private Image staminaImage;
-    private int maxStamina = 100;
-    private int currentStamina;
+    public int maxStamina;
+    public int currentStamina;
 
     // Adjust this speed based on how fast you want the stamina to deplete and refill
     public float depletionSpeed = 19f;
@@ -33,27 +33,63 @@ public class StaminaBar : MonoBehaviour
         }
     }
 
+    public void SetMaxStamina(int maxstamina)
+    {
+        maxStamina = maxstamina;
+    }
+    // Function to update stamina sprite based on current stamina value
+    // Function to update stamina sprite based on current stamina value
+    // Function to update stamina sprite based on current stamina value
     // Function to update stamina sprite based on current stamina value
     public void UpdateStaminaSprite(int stamina)
     {
-        // Calculate the index of the sprite based on the fraction of stamina
-        int spriteIndex = Mathf.Clamp(Mathf.FloorToInt((float)stamina / maxStamina * staminaSprites.Length), 0, staminaSprites.Length - 1);
+        int spriteIndex = 4;
 
-        // Set the sprite based on the calculated index
+        // Check specific values (100, 75, 50, 25) and set the sprite index accordingly
+        if (stamina == 100)
+        {
+            spriteIndex = 4;
+        }
+        else if (stamina <= 75 && stamina >= 50)
+        {
+            spriteIndex = 3;
+        }
+        else if (stamina <= 50 && stamina >= 25)
+        {
+            spriteIndex = 2;
+        }
+        else if (stamina <= 25 && stamina > 0)
+        {
+            spriteIndex = 1;
+        }
+        else if (stamina == 0)
+        {
+            spriteIndex = 0;
+        }
+
+        Debug.Log("Stamina: " + stamina + ", Sprite Index: " + spriteIndex);
         staminaImage.sprite = staminaSprites[spriteIndex];
     }
 
     // Function to decrease stamina
-    private void DecreaseStamina(float amount)
+    public void DecreaseStamina(float amount)
     {
         currentStamina = Mathf.Clamp(currentStamina - Mathf.RoundToInt(amount), 0, maxStamina);
-        UpdateStaminaSprite(currentStamina);
+        // Check if the current stamina is a multiple of 25
+        if (currentStamina % 25 == 0)
+        {
+            UpdateStaminaSprite(currentStamina);
+        }
     }
 
     // Function to refill stamina
-    private void RefillStamina(float amount)
+    public void RefillStamina(float amount)
     {
         currentStamina = Mathf.Clamp(currentStamina + Mathf.RoundToInt(amount), 0, maxStamina);
-        UpdateStaminaSprite(currentStamina);
+        // Check if the current stamina is a multiple of 25
+        if (currentStamina % 25 == 0)
+        {
+            UpdateStaminaSprite(currentStamina);
+        }
     }
 }

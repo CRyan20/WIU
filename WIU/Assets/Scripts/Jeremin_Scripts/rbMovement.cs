@@ -11,6 +11,7 @@ public class rbMovement : MonoBehaviour
     public float gravity = -9.81f;
     public float jumpHeight = 100f;
 
+
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
@@ -31,11 +32,14 @@ public class rbMovement : MonoBehaviour
     public AudioSource Walk;
     public AudioSource Jump;
 
+    private StaminaBar staminaBar;
     private InventoryManager inventoryManager;
 
     private PhotonView photonView;
 
     public HealthSystem healthSystem;
+
+    public float sprintDepletionRate = 1f;
 
     void Awake()
     {
@@ -49,12 +53,20 @@ public class rbMovement : MonoBehaviour
         inventoryManager = GetComponent<InventoryManager>();
         standingHeight = transform.localScale.y; // Store the standing height
         healthSystem = GetComponent<HealthSystem>();
-
+        staminaBar = GetComponentInChildren<StaminaBar>();
         if (!photonView.IsMine)
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
         }
         doorInteraction = GetComponentInChildren<DoorInteraction>();
+
+        staminaBar = GetComponentInChildren<StaminaBar>();
+
+        if (staminaBar != null)
+        {
+            staminaBar.SetMaxStamina((int)staminaBar.maxStamina);
+        }
+      
     }
 
     void Update()
@@ -67,13 +79,13 @@ public class rbMovement : MonoBehaviour
         if (healthSystem.currentHealth <= 0)
         {
             healthSystem.currentHealth = 0;
+            //display Gameover canvas.
         }
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (PauseMenu.Instance.isPaused == false)
         {
-
             if (isGrounded && rb.velocity.y < 0)
             {
                 rb.velocity = new Vector3(rb.velocity.x, -2f, rb.velocity.z);
@@ -84,51 +96,72 @@ public class rbMovement : MonoBehaviour
 
             Vector3 move = transform.right * x + transform.forward * z;
 
-            float currentSpeed = isCrouching ? walkSpeed / 2f : (isSprinting ? sprintSpeed : walkSpeed);
-            rb.MovePosition(rb.position + move * currentSpeed * Time.deltaTime);
+            float currentSpeed = isCrouching ? walkSpeed / 2f : (isSprinting && staminaBar.currentStamina > 0 ? sprintSpeed : walkSpeed);
+
+            // Use rb.velocity to apply movement
+            rb.velocity = new Vector3(move.x * currentSpeed, rb.velocity.y, move.z * currentSpeed);
 
             bool isMoving = (x != 0 || z != 0);
-            animator.SetBool("isMoving", z > 0);
 
-
-            animator.SetBool("isSprinting", isSprinting);
-
-
-            animator.SetBool("isWalkingBackwards", z < 0);
-
-            animator.SetBool("isSprintingBackwards", isSprinting && z < 0);
-
-            animator.SetBool("isStrafing", x > 0);
-
-            animator.SetBool("isStrafingL", x < 0);
-
-            animator.SetBool("isStrafeRunning", isSprinting && x > 0);
-
-            animator.SetBool("isStrafingRunningL", isSprinting && x < 0);
-
+            // Set animation states based on player's movement
             if (isMoving && !isCrouching && !isSprinting && isGrounded)
             {
                 if (!Walk.isPlaying)
                 {
                     Walk.Play();
                 }
-            }
-            else
-            {
-                Walk.Stop();
-            }
 
-
-            if (isSprinting && isGrounded)
-            {
-                if (!Sprint.isPlaying)
+                // Check if stamina is at 0 and switch to walking animation
+                if (staminaBar.currentStamina <= 0)
                 {
-                    Sprint.Play();
+                    isSprinting = false;
+                    animator.SetBool("isSprinting", false);
+                    animator.SetBool("isMoving", true);
                 }
             }
             else
             {
-                Sprint.Stop();
+                Walk.Stop();
+
+                // If not moving and not crouching, switch to idle animation
+                if (!isCrouching)
+                {
+                    animator.SetBool("isMoving", false);
+                }
+            }
+
+            if (isSprinting && isGrounded && isMoving && staminaBar.currentStamina > 0)
+            {
+                Debug.Log("Sprinting...");
+                animator.SetBool("isSprinting", true);
+                animator.SetBool("isMoving", true);
+                Debug.Log(staminaBar.currentStamina);
+                if (!Sprint.isPlaying)
+                {
+                    Sprint.Play();
+                    staminaBar.DecreaseStamina(staminaBar.depletionSpeed * Time.deltaTime);
+                    Debug.Log(staminaBar.currentStamina);
+                }
+            }
+            else if (!isSprinting && isGrounded &&  isMoving)
+            {
+                // Play the idle or walking animation based on the player's state
+                animator.SetBool("isSprinting", false);
+                animator.SetBool("isMoving", true);
+                if (staminaBar.currentStamina > 0)
+                {
+                    Walk.Play();
+                }
+                else
+                {
+                    Walk.Stop();
+                }
+            }
+
+            // Update the stamina bar
+            if (staminaBar != null)
+            {
+                staminaBar.UpdateStaminaSprite((int)staminaBar.currentStamina);
             }
 
             if (Input.GetKeyDown(crouchKey) && isGrounded)
@@ -149,14 +182,12 @@ public class rbMovement : MonoBehaviour
             {
                 Sprint.Play();
                 isSprinting = true;
-
-
             }
-            if (Input.GetKeyUp(sprintKey) || isCrouching)
+
+            if (Input.GetKeyUp(sprintKey) || isCrouching || staminaBar.currentStamina <= 0)
             {
                 Sprint.Stop();
                 isSprinting = false;
-
             }
 
             if (Input.GetButtonDown("Jump") && isGrounded)
@@ -166,21 +197,18 @@ public class rbMovement : MonoBehaviour
                 Jump.Play();
             }
 
-            //// Check for pickup when player presses the "F" key
-            //if (Input.GetKeyDown(KeyCode.F))
-            //{
-            //    inventoryManager.TryPickupItem();
-            //}
-
-            //// Check for dropping when player presses the "G" key
-            //if (Input.GetKeyDown(KeyCode.G))
-            //{
-            //    inventoryManager.TryDropItem();
-            //}
+            // If stamina is at 0, switch to walking animation
+            if (staminaBar.currentStamina <= 0)
+            {
+                isSprinting = false;
+                animator.SetBool("isSprinting", false);
+            }
 
             rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
         }
     }
+
+
 
     void OnTriggerEnter(Collider other)
     {

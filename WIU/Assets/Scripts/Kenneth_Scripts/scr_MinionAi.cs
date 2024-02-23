@@ -203,11 +203,10 @@ public class scr_MinionAi : MonoBehaviour
     private void Patroling()
 
     {
-        //// Stop other audio sources
-        //StopAllAudioExcept(idleAudioSource);
-
-        //// Play idle sound
-        //idleAudioSource.Play();
+        if (idleAudioSource != null && !idleAudioSource.isPlaying)
+        {
+            idleAudioSource.Play();
+        }
 
         animator.SetBool("isPatrolling", true);
         animator.SetBool("isChasing", false);
@@ -241,11 +240,15 @@ public class scr_MinionAi : MonoBehaviour
 
     private void ChasePlayer()
     {
-        //// Stop other audio sources
-        //StopAllAudioExcept(chaseAudioSource);
+        // Stop idle and attack sounds
+        if (idleAudioSource != null)
+            idleAudioSource.Stop();
+        if (attackAudioSource != null)
+            attackAudioSource.Stop();
 
         // Play chase sound
-        chaseAudioSource.Play();
+        if (chaseAudioSource != null && !chaseAudioSource.isPlaying)
+            chaseAudioSource.Play();
 
         foreach (Transform player in players)
         {
@@ -257,11 +260,15 @@ public class scr_MinionAi : MonoBehaviour
     }
 
     private void AttackPlayer()
-    {
-        //// Stop other audio sources
-        //StopAllAudioExcept(attackAudioSource);
+    { // Stop idle and chase sounds
+        if (idleAudioSource != null)
+            idleAudioSource.Stop();
+        if (chaseAudioSource != null)
+            chaseAudioSource.Stop();
+
         // Play attack sound
-        attackAudioSource.Play();
+        if (attackAudioSource != null && !attackAudioSource.isPlaying)
+            attackAudioSource.Play();
 
         // Make sure enemy does not move
         agent.SetDestination(transform.position);

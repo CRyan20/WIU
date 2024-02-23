@@ -53,24 +53,47 @@ public class HealthBar : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Check if the player health has changed and update the health sprite accordingly
+        if (playerHealth.GetCurrentHealth() != lastHealth)
+        {
+            UpdateHealthSprite(playerHealth.GetCurrentHealth());
+        }
+    }
 
     // Function to update health sprite based on current health value
     public void UpdateHealthSprite(int currentHealth)
     {
         int maxHealth = playerHealth.GetMaxHealth();
+        int spriteIndex = 4;
 
-        // Calculate the index of the sprite based on the fraction of health
-        int spriteIndex = Mathf.Clamp(Mathf.FloorToInt((float)currentHealth / maxHealth * (healthSprites.Length - 1)), 0, healthSprites.Length - 1);
+        // Check specific values and set the sprite index accordingly
+        if (currentHealth == 100)
+        {
+            spriteIndex = 4;
+        }
+        else if (currentHealth <= 75 && currentHealth > 50)
+        {
+            spriteIndex = 3;
+        }
+        else if (currentHealth <= 50 && currentHealth > 25)
+        {
+            spriteIndex = 2;
+        }
+        else if (currentHealth <= 25 && currentHealth > 0)
+        {
+            spriteIndex = 1;
+        }
+        else if (currentHealth == 0)
+        {
+            spriteIndex = 0;
+        }
 
         // Set the sprite based on the calculated index
         healthImage.sprite = healthSprites[spriteIndex];
 
-        // Check if the health has changed by at least 25 HP
-        if (Mathf.Abs(currentHealth - lastHealth) >= 25)
-        {
-            // Update the last health value and perform any additional actions
-            lastHealth = currentHealth;
-            // Add any additional actions here
-        }
+        // Update the last health value
+        lastHealth = currentHealth;
     }
 }

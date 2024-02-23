@@ -37,10 +37,6 @@ public class StaminaBar : MonoBehaviour
     {
         maxStamina = maxstamina;
     }
-    // Function to update stamina sprite based on current stamina value
-    // Function to update stamina sprite based on current stamina value
-    // Function to update stamina sprite based on current stamina value
-    // Function to update stamina sprite based on current stamina value
     public void UpdateStaminaSprite(int stamina)
     {
         int spriteIndex = 4;
